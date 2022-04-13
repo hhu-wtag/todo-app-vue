@@ -1,13 +1,11 @@
 <template>
-  <button @click="handler">
+  <button @click="$emit('handler')">
     <slot></slot>
   </button>
 </template>
 
 <script>
-export default {
-  props: ["handler"],
-}
+export default {}
 </script>
 
 <style></style>

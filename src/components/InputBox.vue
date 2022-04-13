@@ -1,25 +1,23 @@
 <template>
-  <form>
+  <div>
     <p>Total Number of Todos: {{ arrLen }}</p>
     <input
       type="text"
-      @input="handleInput"
-      :value="todoTitle"
+      @input="$emit('input', $event.target.value)"
+      :value="value"
       name="todoInput"
       id="todoInput"
     />
 
-    <button type="click" @click="handleAddTodo">Add Todo</button>
-  </form>
+    <button type="submit" @click="$emit('handler', $event)">Add Todo</button>
+  </div>
 </template>
 
 <script>
 export default {
-  props: ["todoTitle", "handleAddTodo", "arrLen", "handleInput"],
+  props: ["value", "arrLen"],
   data: function () {
-    return {
-      title: this.$props.todoTitle,
-    }
+    return {}
   },
 }
 </script>

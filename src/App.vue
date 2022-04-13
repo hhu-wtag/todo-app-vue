@@ -1,9 +1,9 @@
 <template>
   <div id="app" class="container">
     <InputBox
-      :todoTitle="todoTitle"
-      :handleAddTodo="handleAddTodo"
-      :handleInput="handleInput"
+      :value="todoTitle"
+      v-model="todoTitle"
+      @handler="handleAddTodo"
       :arrLen="arrLen"
     />
 
@@ -11,10 +11,10 @@
       <div v-for="todo of todos" :key="todo.id" class="container__todo-item">
         <TodoTitle :done="todo.done" :title="todo.title" />
 
-        <TodoButton v-if="!todo.done" :handler="() => handleDone(todo.id)"
+        <TodoButton v-if="!todo.done" @handler="() => handleDone(todo.id)"
           >Done</TodoButton
         >
-        <TodoButton :handler="() => handleDelete(todo.id)">Delete</TodoButton>
+        <TodoButton @handler="() => handleDelete(todo.id)">Delete</TodoButton>
       </div>
     </div>
   </div>

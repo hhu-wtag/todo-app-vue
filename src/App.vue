@@ -1,20 +1,39 @@
 <template>
   <div id="app" class="container">
     <InputBox
+      identifier="initalInput"
       :value="todoTitle"
       v-model="todoTitle"
       @handler="handleAddTodo"
-      :arrLen="arrLen"
-    />
+      >Add</InputBox
+    >
 
     <div class="container__todo">
       <div v-for="todo of todos" :key="todo.id" class="container__todo-item">
-        <TodoTitle :done="todo.done" :title="todo.title" />
+        <TodoTitle
+          v-if="!todo.inEditState"
+          :done="todo.done"
+          :title="todo.title"
+        />
 
-        <TodoButton v-if="!todo.done" @handler="() => handleDone(todo.id)"
-          >Done</TodoButton
+        <InputBox
+          v-else
+          identifier="todoInput"
+          :todo="todo"
+          :id="todo.id"
+          :value="todo.title"
+          v-model="todo.title"
+          @handler="handleUpdate"
+          @handleCancel="handleCancel"
+          >Update</InputBox
         >
-        <TodoButton @handler="() => handleDelete(todo.id)">Delete</TodoButton>
+
+        <ActionButtons
+          :todo="todo"
+          @handleDelete="handleDelete"
+          @handleDone="handleDone"
+          @handleEdit="handleEdit"
+        />
       </div>
     </div>
   </div>
@@ -24,10 +43,10 @@
 import Vue from "vue"
 import InputBox from "./components/InputBox.vue"
 import TodoTitle from "./components/TodoTitle.vue"
-import TodoButton from "./components/TodoButton.vue"
+import ActionButtons from "./components/ActionButtons.vue"
 
 export default {
-  components: { InputBox, TodoTitle, TodoButton },
+  components: { InputBox, TodoTitle, ActionButtons },
   data: function () {
     return {
       todoTitle: "",
@@ -49,6 +68,7 @@ export default {
         title: this.todoTitle,
         id: Date.now(),
         done: false,
+        inEditState: false,
       }
 
       this.todos.push(newTodo)
@@ -62,11 +82,42 @@ export default {
       Vue.set(this.todos, index, {
         ...this.todos[index],
         done: true,
+        inEditState: false,
       })
     },
 
     handleDelete(id) {
       this.todos = this.todos.filter((item) => item.id !== id)
+    },
+
+    handleEdit(id) {
+      let index = this.todos.findIndex((todo) => todo.id === id)
+
+      Vue.set(this.todos, index, {
+        ...this.todos[index],
+        inEditState: true,
+      })
+    },
+
+    handleUpdate(e, id) {
+      console.log(id)
+
+      let index = this.todos.findIndex((todo) => todo.id === id)
+
+      Vue.set(this.todos, index, {
+        ...this.todos[index],
+        inEditState: false,
+      })
+    },
+
+    handleCancel(e, id, intialTitle) {
+      let index = this.todos.findIndex((todo) => todo.id === id)
+
+      Vue.set(this.todos, index, {
+        ...this.todos[index],
+        title: intialTitle,
+        inEditState: false,
+      })
     },
   },
 

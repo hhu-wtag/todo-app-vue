@@ -6,18 +6,18 @@
       v-if="isEditing"
       identifier="initalInput"
       :value="editText"
-      v-model="editText"
+      v-model.trim="editText"
     />
 
     <ActionButtons
       identifier="todoButtons"
       :todo="todo"
       :isEditing="isEditing"
-      @onDone="onDone"
-      @onDelete="onDelete"
-      @onEdit="onEdit"
-      @onUpdate="onUpdate"
-      @onCancel="onCancel"
+      @done="onDone"
+      @delete="onDelete"
+      @edit="onEdit"
+      @update="onUpdate"
+      @cancel="onCancel"
     />
   </div>
 </template>
@@ -48,10 +48,11 @@ export default {
 
   methods: {
     onDone() {
-      this.$emit("onDone", this.todo.id)
+      this.isEditing = false
+      this.$emit("done", this.todo.id)
     },
     onDelete() {
-      this.$emit("onDelete", this.todo.id)
+      this.$emit("delete", this.todo.id)
     },
     onEdit() {
       this.isEditing = true
@@ -59,15 +60,11 @@ export default {
     },
     onUpdate() {
       this.isEditing = false
-      if (
-        this.editText === null ||
-        this.editText === "" ||
-        this.editText === this.todo.title
-      ) {
+      if (!this.editText || this.editText === this.todo.title) {
         return
       }
 
-      this.$emit("onUpdate", this.todo.id, this.editText)
+      this.$emit("update", this.todo.id, this.editText)
     },
     onCancel() {
       this.isEditing = false

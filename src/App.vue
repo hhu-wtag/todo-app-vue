@@ -1,16 +1,19 @@
 <template>
   <div id="app" class="container">
-    <InputBox identifier="initalInput" :value="todoTitle" v-model="todoTitle" />
+    <div class="container__input">
+      <InputBox identifier="initalInput" v-model.trim="todoTitle" />
+      <p>{{ errorMessage }}</p>
+    </div>
 
-    <TodoButton @click="onAddTodo">Add</TodoButton>
+    <TodoButton @click="onAdd">Add</TodoButton>
 
     <div class="container__todo">
       <div v-for="todo of todos" :key="todo.id" class="container__todo-item">
         <TodoComp
           :todo="todo"
-          @onDone="onDone"
-          @onDelete="onDelete"
-          @onUpdate="onUpdate"
+          @done="onDone"
+          @delete="onDelete"
+          @update="onUpdate"
         />
       </div>
     </div>
@@ -29,12 +32,18 @@ export default {
     return {
       todoTitle: null,
       todos: [],
+      errorMessage: null,
+      isError: false,
     }
   },
 
   methods: {
-    onAddTodo() {
-      if (this.todoTitle === "" || this.todoTitle === null) return
+    onAdd() {
+      if (!this.todoTitle) {
+        console.log("Can't add empty string")
+        this.onError("Can't add empty string.")
+        return
+      }
 
       let newTodo = {
         title: this.todoTitle,
@@ -62,14 +71,22 @@ export default {
     },
 
     onUpdate(id, editText) {
-      console.log(id)
-
       let index = this.todos.findIndex((todo) => todo.id === id)
 
       Vue.set(this.todos, index, {
         ...this.todos[index],
         title: editText,
       })
+    },
+
+    onError(message) {
+      this.isError = true
+      this.errorMessage = message
+
+      setTimeout(() => {
+        this.isError = false
+        this.errorMessage = null
+      }, 1000)
     },
   },
 

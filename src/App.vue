@@ -105,7 +105,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: $text-primary;
-  margin-top: 60px;
+  margin-top: 70px;
   background: $bg-primary;
 }
 

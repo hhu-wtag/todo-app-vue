@@ -8,9 +8,21 @@
     >
 
     <TodoButton
-      v-if="!todo.inEditState && !todo.done"
-      @handler="() => $emit('handleEdit', todo.id)"
+      v-if="!isEditing && !todo.done"
+      @handler="() => $emit('onEdit', todo.id)"
       >Edit</TodoButton
+    >
+
+    <TodoButton
+      v-if="isEditing && !todo.done"
+      @handler="() => $emit('onUpdate', todo.id)"
+      >Update</TodoButton
+    >
+
+    <TodoButton
+      v-if="isEditing && !todo.done"
+      @handler="() => $emit('onCancel', todo.id)"
+      >Cancel</TodoButton
     >
   </div>
 </template>
@@ -18,7 +30,17 @@
 <script>
 import TodoButton from "./TodoButton.vue"
 export default {
-  props: ["todo"],
+  props: {
+    todo: {
+      type: Object,
+    },
+    identifier: {
+      type: String,
+    },
+    isEditing: {
+      type: Boolean,
+    },
+  },
   components: {
     TodoButton,
   },

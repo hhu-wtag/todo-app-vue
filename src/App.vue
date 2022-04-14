@@ -2,7 +2,7 @@
   <div id="app" class="container">
     <InputBox identifier="initalInput" :value="todoTitle" v-model="todoTitle" />
 
-    <TodoButton @handler="onAddTodo">Add</TodoButton>
+    <TodoButton @click="onAddTodo">Add</TodoButton>
 
     <div class="container__todo">
       <div v-for="todo of todos" :key="todo.id" class="container__todo-item">
@@ -19,9 +19,9 @@
 
 <script>
 import Vue from "vue"
-import InputBox from "./components/InputBox.vue"
-import TodoButton from "./components/TodoButton.vue"
-import TodoComp from "./components/TodoComp.vue"
+import InputBox from "./components/InputBox"
+import TodoButton from "./components/TodoButton"
+import TodoComp from "./components/TodoComp"
 
 export default {
   components: { InputBox, TodoButton, TodoComp },

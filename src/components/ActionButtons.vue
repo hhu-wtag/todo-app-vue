@@ -1,34 +1,32 @@
 <template>
   <div>
-    <TodoButton v-if="!todo.done" @handler="() => $emit('handleDone', todo.id)"
+    <TodoButton v-if="!todo.done" @click="() => $emit('onDone', todo.id)"
       >Done</TodoButton
     >
-    <TodoButton @handler="() => $emit('handleDelete', todo.id)"
-      >Delete</TodoButton
-    >
+    <TodoButton @click="() => $emit('onDelete', todo.id)">Delete</TodoButton>
 
     <TodoButton
       v-if="!isEditing && !todo.done"
-      @handler="() => $emit('onEdit', todo.id)"
+      @click="() => $emit('onEdit', todo.id)"
       >Edit</TodoButton
     >
 
     <TodoButton
       v-if="isEditing && !todo.done"
-      @handler="() => $emit('onUpdate', todo.id)"
+      @click="() => $emit('onUpdate', todo.id)"
       >Update</TodoButton
     >
 
     <TodoButton
       v-if="isEditing && !todo.done"
-      @handler="() => $emit('onCancel', todo.id)"
+      @click="() => $emit('onCancel', todo.id)"
       >Cancel</TodoButton
     >
   </div>
 </template>
 
 <script>
-import TodoButton from "./TodoButton.vue"
+import TodoButton from "./TodoButton"
 export default {
   props: {
     todo: {

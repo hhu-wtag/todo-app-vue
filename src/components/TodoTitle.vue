@@ -4,7 +4,14 @@
 
 <script>
 export default {
-  props: ["done", "title"],
+  props: {
+    done: {
+      type: Boolean,
+    },
+    title: {
+      type: String,
+    },
+  },
 }
 </script>
 

@@ -1,11 +1,9 @@
 <template>
-  <button @click="$emit('handler')">
+  <button @click="$emit('click')">
     <slot></slot>
   </button>
 </template>
 
-<script>
-export default {}
-</script>
+<script></script>
 
 <style></style>

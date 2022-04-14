@@ -13,8 +13,8 @@
       identifier="todoButtons"
       :todo="todo"
       :isEditing="isEditing"
-      @handleDone="onDone"
-      @handleDelete="onDelete"
+      @onDone="onDone"
+      @onDelete="onDelete"
       @onEdit="onEdit"
       @onUpdate="onUpdate"
       @onCancel="onCancel"
@@ -26,7 +26,7 @@
 import TodoTitle from "./TodoTitle"
 import ActionButtons from "./ActionButtons"
 import InputBox from "./InputBox"
-/* eslint-disable */
+
 export default {
   props: {
     todo: {

@@ -9,19 +9,14 @@
 
     <div class="container__todo">
       <div v-for="todo of todos" :key="todo.id" class="container__todo-item">
-        <TodoComp
-          :todo="todo"
-          @done="onDone"
-          @delete="onDelete"
-          @update="onUpdate"
-        />
+        <TodoComp :todo="todo" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Vue from "vue"
+import { mapGetters } from "vuex"
 import InputBox from "./components/InputBox"
 import TodoButton from "./components/TodoButton"
 import TodoComp from "./components/TodoComp"
@@ -31,7 +26,6 @@ export default {
   data: function () {
     return {
       todoTitle: null,
-      todos: [],
       errorMessage: null,
       isError: false,
     }
@@ -45,38 +39,9 @@ export default {
         return
       }
 
-      let newTodo = {
-        title: this.todoTitle,
-        id: Date.now(),
-        done: false,
-      }
-
-      this.todos.push(newTodo)
+      this.$store.dispatch("addAction", this.todoTitle)
 
       this.todoTitle = null
-    },
-
-    onDone(id) {
-      let index = this.todos.findIndex((todo) => todo.id === id)
-
-      Vue.set(this.todos, index, {
-        ...this.todos[index],
-        done: true,
-        inEditState: false,
-      })
-    },
-
-    onDelete(id) {
-      this.todos = this.todos.filter((item) => item.id !== id)
-    },
-
-    onUpdate(id, editText) {
-      let index = this.todos.findIndex((todo) => todo.id === id)
-
-      Vue.set(this.todos, index, {
-        ...this.todos[index],
-        title: editText,
-      })
     },
 
     onError(message) {
@@ -90,6 +55,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      todos: "getTodos",
+    }),
     arrLen: function () {
       return this.todos.length
     },

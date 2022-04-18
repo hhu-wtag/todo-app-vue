@@ -49,10 +49,11 @@ export default {
   methods: {
     onDone() {
       this.isEditing = false
-      this.$emit("done", this.todo.id)
+
+      this.$store.dispatch("doneAction", this.todo.id)
     },
     onDelete() {
-      this.$emit("delete", this.todo.id)
+      this.$store.dispatch("deleteAction", this.todo.id)
     },
     onEdit() {
       this.isEditing = true
@@ -64,7 +65,7 @@ export default {
         return
       }
 
-      this.$emit("update", this.todo.id, this.editText)
+      this.$store.dispatch("updateAction", this.todo.id, this.editText)
     },
     onCancel() {
       this.isEditing = false

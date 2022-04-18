@@ -1,41 +1,76 @@
 import Vue from "vue"
 import Vuex from "vuex"
+import {
+  ADD_MUTATION,
+  DONE_MUTATION,
+  DELETE_MUTATION,
+  UPDATE_MUTATION,
+} from "./mutation-types.js"
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: function () {
     return {
-      isDarkMode: false,
-      allTodo: [],
-      doneTodo: [],
+      todos: [],
     }
   },
 
-  mutations: {
-    toogleDarkMode(state) {
-      state.isDarkMode = !state.isDarkMode
-    },
-
-    handleDoneTodo(state, payload) {
-      state.doneTodo.push(payload)
-    },
-
-    populateAllTodo(state, payload) {
-      state.allTodo = payload
+  getters: {
+    getTodos(state) {
+      return state.todos
     },
   },
 
+  mutations: {
+    [ADD_MUTATION](state, payload) {
+      state.todos.push({
+        title: payload.title,
+        id: Date.now(),
+        done: false,
+      })
+    },
+
+    [DONE_MUTATION](state, payload) {
+      let index = state.todos.findIndex((todo) => todo.id === payload.id)
+
+      Vue.set(state.todos, index, {
+        ...state.todos[index],
+        done: true,
+      })
+    },
+
+    [DELETE_MUTATION](state, payload) {
+      state.todos = state.todos.filter((item) => item.id !== payload.id)
+    },
+
+    [UPDATE_MUTATION](state, payload) {
+      let index = state.todos.findIndex((todo) => todo.id === payload.id)
+
+      Vue.set(state.todos, index, {
+        ...state.todos[index],
+        title: payload.editText,
+      })
+    },
+  },
+
+  /* eslint-disable */
+
   actions: {
-    /* eslint-disable */
-    async getTodos({ commit, state }) {
-      let response = await fetch("https://jsonplaceholder.typicode.com/posts")
-      response = await response.json()
-      response = response.slice(-10)
+    addAction({ commit }, title) {
+      commit(ADD_MUTATION, { title })
+    },
 
-      response.forEach((todo) => (todo.done = false))
+    doneAction({ commit }, id) {
+      commit(DONE_MUTATION, { id })
+    },
 
-      commit("populateAllTodo", response)
+    deleteAction({ commit }, id) {
+      commit(DELETE_MUTATION, { id })
+    },
+
+    updateAction({ commit }, id, title) {
+      commit(UPDATE_MUTATION, { id, title })
     },
   },
 })

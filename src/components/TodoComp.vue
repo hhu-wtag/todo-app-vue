@@ -6,7 +6,7 @@
       v-if="isEditing"
       identifier="initalInput"
       :value="editText"
-      v-model="editText"
+      v-model.trim="editText"
     />
 
     <ActionButtons

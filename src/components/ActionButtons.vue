@@ -34,7 +34,6 @@ export default {
   components: {
     TodoButton,
   },
-
   methods: {
     onDone() {
       this.$emit("done", this.todo.id)

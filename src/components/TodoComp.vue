@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 v-if="!isEditing">
+    <h1 v-if="!isEditing" :class="{ done: isDone }">
       {{ todo.title }}
     </h1>
 
@@ -45,12 +45,14 @@ export default {
     return {
       editText: null,
       isEditing: false,
+      isDone: false,
     }
   },
 
   methods: {
     onDone() {
       this.isEditing = false
+      this.isDone = true
       this.$emit("done", this.todo.id)
     },
     onDelete() {
@@ -76,4 +78,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.done {
+  color: $text-success;
+  text-decoration: line-through;
+}
+</style>

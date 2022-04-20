@@ -4,6 +4,7 @@ $text-primary: #32394b;
 $text-secondary: #bbbdd0;
 $text-accent: #7a8dfd;
 $text-success: #0bc375;
+$border-primary: #d1d8ff;
 
 $columns: 4;
 $gap: 24px;
@@ -70,8 +71,15 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+a {
   overflow-wrap: break-word;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: $text-primary;
 }
 /*
   9. Create a root stacking context
@@ -100,11 +108,8 @@ li {
 }
 
 .btn {
-  border: 1px solid #dde2ff;
-  background: #ffffff;
-  border-radius: 5px;
   cursor: pointer;
-  padding: 2px 4px 2px 4px;
+  border-radius: 5px;
 }
 
 .disabled {

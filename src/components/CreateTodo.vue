@@ -20,8 +20,10 @@
     </div>
 
     <div class="createTodo__button">
-      <button class="createTodo__button_add" @click="$emit('add')">Add</button>
-      <button class="createTodo__button_cancel" @click="$emit('cancel')">
+      <button class="createTodo__button_add btn" @click="$emit('add')">
+        Add
+      </button>
+      <button class="createTodo__button_cancel btn" @click="$emit('cancel')">
         Cancel
       </button>
     </div>
@@ -61,5 +63,19 @@ textarea {
 .createTodo__inputBox {
   display: flex;
   flex-direction: column;
+
+  &_descInput,
+  &_titleInput {
+    margin-bottom: 12px;
+    border: 3px solid $border-primary;
+    border-radius: 5px;
+  }
+}
+
+.createTodo__button > button {
+  font-size: 12px;
+  padding: 8px 12px;
+  border: 1px solid #d1d8ff;
+  background-color: $bg-secondary;
 }
 </style>

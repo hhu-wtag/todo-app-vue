@@ -1,36 +1,43 @@
 <template>
-  <div>
-    <router-link
-      :to="{
-        name: 'details',
-        params: { id: todo.id, todo, inDetailedMode: true },
-      }"
-    >
-      <h1 v-if="!isEditing" :class="{ done: isDone }">
-        {{ todo.title }}
-      </h1>
-    </router-link>
+  <div class="todo">
+    <div class="todo__header">
+      <router-link
+        :to="{
+          name: 'details',
+          params: { id: todo.id, todo, inDetailedMode: true },
+        }"
+      >
+        <h1
+          v-if="!isEditing"
+          class="todo__header_title"
+          :class="{ done: isDone }"
+        >
+          {{ todo.title }}
+        </h1>
+      </router-link>
 
-    <p>{{ todo.desc }}</p>
+      <p class="todo__header_desc">{{ todo.desc }}</p>
 
-    <InputBox
-      v-if="isEditing"
-      identifier="initalInput"
-      :value="editText"
-      v-model.trim="editText"
-    />
-
-    <ActionButtons
-      identifier="todoButtons"
-      :todo="todo"
-      :isEditing="isEditing"
-      :inDetailedMode="inDetailedMode"
-      @done="onDone"
-      @delete="onDelete"
-      @edit="onEdit"
-      @update="onUpdate"
-      @cancel="onCancel"
-    />
+      <InputBox
+        v-if="isEditing"
+        identifier="initalInput"
+        :value="editText"
+        v-model.trim="editText"
+      />
+    </div>
+    <div class="todo__footer">
+      <ActionButtons
+        identifier="todoButtons"
+        :todo="todo"
+        :isEditing="isEditing"
+        :inDetailedMode="inDetailedMode"
+        @done="onDone"
+        @delete="onDelete"
+        @edit="onEdit"
+        @update="onUpdate"
+        @cancel="onCancel"
+      />
+    </div>
   </div>
 </template>
 
@@ -99,5 +106,22 @@ export default {
 .done {
   color: $text-success;
   text-decoration: line-through;
+}
+
+.todo {
+  justify-content: space-between;
+}
+
+.todo__header {
+  margin-bottom: 24px;
+
+  &_title {
+    font-size: 24px;
+  }
+
+  &_desc {
+    font-size: 14px;
+    color: $text-secondary;
+  }
 }
 </style>

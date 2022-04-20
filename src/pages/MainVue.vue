@@ -1,6 +1,6 @@
 <template>
   <div class="todoApp">
-    <!-- <ModalVue /> -->
+    <ModalVue v-if="showModal" @yes="onDelete" @no="onNo" />
     <div class="todoApp__main">
       <p class="todoApp__main_title">Add Tasks</p>
       <div class="todoApp__button">
@@ -39,7 +39,7 @@
           :todo="todo"
           :inDetailedMode="false"
           @done="onDone"
-          @delete="onDelete"
+          @delete="openModal"
           @update="onUpdate"
         />
       </div>
@@ -56,9 +56,10 @@ import Vue from "vue"
 
 import TodoItem from "../components/TodoItem"
 import CreateTodo from "../components/CreateTodo.vue"
+import ModalVue from "@/components/ModalVue.vue"
 
 export default {
-  components: { TodoItem, CreateTodo },
+  components: { TodoItem, CreateTodo, ModalVue },
   data: function () {
     return {
       todoTitle: null,
@@ -67,6 +68,8 @@ export default {
       isTitleError: false,
       isDescError: false,
       showCreateTodo: false,
+      showModal: false,
+      todoItemToBeDeleted: null,
     }
   },
 
@@ -118,8 +121,12 @@ export default {
       this.$emit("update", this.todos)
     },
 
-    onDelete(id) {
-      this.todos = this.todos.filter((item) => item.id !== id)
+    onDelete() {
+      this.todos = this.todos.filter(
+        (item) => item.id !== this.todoItemToBeDeleted
+      )
+
+      this.showModal = false
 
       this.$emit("on-update", this.todos)
     },
@@ -155,6 +162,16 @@ export default {
 
     onDescInput(val) {
       this.todoDesc = val
+    },
+
+    openModal(id) {
+      this.todoItemToBeDeleted = id
+      this.showModal = true
+    },
+
+    onNo() {
+      this.showModal = false
+      this.todoItemToBeDeleted = null
     },
   },
 }

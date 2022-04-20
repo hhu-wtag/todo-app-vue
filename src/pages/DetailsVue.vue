@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TodoComp
+    <TodoItem
       :todo="todo"
       @done="onDone"
       @delete="onDelete"
@@ -14,18 +14,14 @@
 </template>
 
 <script>
-import TodoComp from "@/components/TodoComp.vue"
+import TodoItem from "@/components/TodoItem.vue"
 export default {
-  props: {
-    todo: {
-      type: Object,
-    },
-
-    inDetailedMode: {
-      type: Boolean,
-    },
+  data() {
+    return {
+      todo: {},
+    }
   },
-  components: { TodoComp },
+  components: { TodoItem },
 
   methods: {
     onDone() {
@@ -38,12 +34,16 @@ export default {
       this.$emit("update")
     },
   },
+
+  mounted() {
+    this.todo = JSON.parse(this.$route.params.todo)
+  },
 }
 </script>
 
 <style lang="scss">
 .detailedView {
-  width: 100%;
-  height: 80%;
+  width: 100% !important;
+  height: 80vh;
 }
 </style>

@@ -23,29 +23,31 @@
       <button class="createTodo__button_add btn" @click="$emit('add')">
         Add
       </button>
-      <button class="createTodo__button_cancel btn" @click="$emit('cancel')">
-        Cancel
-      </button>
+      <div class="createTodo__button_cancel btn" @click="$emit('cancel')">
+        <DeleteIcon />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import DeleteIcon from "@/components/icons/DeleteIcon.vue"
+
 export default {
+  components: {
+    DeleteIcon,
+  },
   props: {
     todoTitle: {
       type: String,
     },
-
     todoDesc: {
       type: String,
     },
-
     isTitleError: {
       type: Boolean,
       default: false,
     },
-
     isDescError: {
       type: Boolean,
       default: false,
@@ -77,5 +79,14 @@ textarea {
   padding: 8px 12px;
   border: 1px solid #d1d8ff;
   background-color: $bg-secondary;
+}
+
+.createTodo__button {
+  display: flex;
+  align-items: center;
+
+  &_cancel {
+    margin-left: 18px;
+  }
 }
 </style>

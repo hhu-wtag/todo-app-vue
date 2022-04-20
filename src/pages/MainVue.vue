@@ -1,5 +1,6 @@
 <template>
   <div class="todoApp">
+    <!-- <ModalVue /> -->
     <div class="todoApp__main">
       <p class="todoApp__main_title">Add Tasks</p>
       <div class="todoApp__button">
@@ -19,7 +20,7 @@
       </div>
 
       <div class="todoApp__list">
-        <CreateTodoVue
+        <CreateTodo
           v-if="showCreateTodo"
           :todoTitle="todoTitle"
           :todoDesc="todoDesc"
@@ -31,7 +32,7 @@
           @cancel="onCancel"
         />
 
-        <TodoComp
+        <TodoItem
           v-for="todo of todos"
           :key="todo.id"
           class="card"
@@ -53,11 +54,11 @@
 <script>
 import Vue from "vue"
 
-import TodoComp from "../components/TodoComp"
-import CreateTodoVue from "../components/CreateTodo.vue"
+import TodoItem from "../components/TodoItem"
+import CreateTodo from "../components/CreateTodo.vue"
 
 export default {
-  components: { TodoComp, CreateTodoVue },
+  components: { TodoItem, CreateTodo },
   data: function () {
     return {
       todoTitle: null,
@@ -161,6 +162,7 @@ export default {
 
 <style lang="scss">
 .todoApp {
+  position: relative;
   display: flex;
   flex-direction: column;
 }

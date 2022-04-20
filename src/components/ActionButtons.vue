@@ -1,13 +1,18 @@
 <template>
-  <div>
-    <TodoButton v-if="!todo.done" @click="onDone">Done</TodoButton>
-    <TodoButton @click="onDelete">Delete</TodoButton>
+  <div class="actionButtons">
+    <TodoButton v-if="!todo.done" @click="onDone">
+      <DoneIcon />
+    </TodoButton>
+    <TodoButton @click="onDelete">
+      <DeleteIcon />
+    </TodoButton>
 
     <TodoButton
       v-if="!isEditing && !todo.done && inDetailedMode"
       @click="onEdit"
-      >Edit</TodoButton
     >
+      <EditIcon />
+    </TodoButton>
 
     <TodoButton v-if="isEditing && !todo.done" @click="onUpdate"
       >Update</TodoButton
@@ -21,6 +26,9 @@
 
 <script>
 import TodoButton from "./TodoButton"
+import DoneIcon from "./icons/DoneIcon.vue"
+import DeleteIcon from "./icons/DeleteIcon.vue"
+import EditIcon from "./icons/EditIcon.vue"
 export default {
   props: {
     todo: {
@@ -39,6 +47,9 @@ export default {
   },
   components: {
     TodoButton,
+    DoneIcon,
+    DeleteIcon,
+    EditIcon,
   },
   methods: {
     onDone() {
@@ -60,4 +71,13 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.actionButtons {
+  display: flex;
+  align-items: center;
+}
+
+.actionButtons > * + * {
+  margin-left: 24px;
+}
+</style>

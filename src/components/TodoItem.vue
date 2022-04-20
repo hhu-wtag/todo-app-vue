@@ -1,12 +1,7 @@
 <template>
   <div class="todo">
     <div class="todo__header">
-      <router-link
-        :to="{
-          name: 'details',
-          params: { id: todo.id, todo, inDetailedMode: true },
-        }"
-      >
+      <router-link :to="`/details/${todo.id}/${JSON.stringify(todo)}`">
         <h1
           v-if="!isEditing"
           class="todo__header_title"

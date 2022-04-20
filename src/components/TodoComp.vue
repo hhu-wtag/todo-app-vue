@@ -1,6 +1,10 @@
 <template>
   <div>
-    <TodoTitle v-if="!isEditing" :done="todo.done" :title="todo.title" />
+    <h1 v-if="!isEditing">
+      {{ todo.title }}
+    </h1>
+
+    <p>{{ todo.desc }}</p>
 
     <InputBox
       v-if="isEditing"
@@ -23,7 +27,6 @@
 </template>
 
 <script>
-import TodoTitle from "./TodoTitle"
 import ActionButtons from "./ActionButtons"
 import InputBox from "./InputBox"
 
@@ -34,7 +37,6 @@ export default {
     },
   },
   components: {
-    TodoTitle,
     ActionButtons,
     InputBox,
   },

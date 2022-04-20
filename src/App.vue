@@ -1,16 +1,51 @@
 <template>
-  <div id="app" class="container">
-    <CreateTodoVue />
+  <div id="app" class="todoApp">
+    <div class="todoApp__header">Header</div>
+    <div class="todoApp__main">
+      <p>Add Tasks</p>
+      <div class="todoApp__button">
+        <button class="todoApp__button_createButton" @click="onCreate">
+          Create
+        </button>
 
-    <div class="container__todo">
-      <div v-for="todo of todos" :key="todo.id" class="container__todo-item">
+        <div class="todoApp__button_filterButton">
+          <button class="todoApp__button_filterButton-all">All</button>
+          <button class="todoApp__button_filterButton-incomplete">
+            Incomplete
+          </button>
+          <button class="todoApp__button_filterButton-complete">
+            Complete
+          </button>
+        </div>
+      </div>
+
+      <div class="todoApp__list">
+        <CreateTodoVue
+          v-if="showCreateTodo"
+          :todoTitle="todoTitle"
+          :todoDesc="todoDesc"
+          :isTitleError="isTitleError"
+          :isDescError="isDescError"
+          @title-input="onTitleInput"
+          @desc-input="onDescInput"
+          @add="onAdd"
+          @cancel="onCancel"
+        />
+
         <TodoComp
+          v-for="todo of todos"
+          :key="todo.id"
+          class="card"
           :todo="todo"
           @done="onDone"
           @delete="onDelete"
           @update="onUpdate"
         />
       </div>
+    </div>
+
+    <div class="todoApp__footer">
+      <button class="todoApp__footer_loadMore">Load More</button>
     </div>
   </div>
 </template>
@@ -26,22 +61,31 @@ export default {
   data: function () {
     return {
       todoTitle: null,
+      todoDesc: null,
       todos: [],
-      errorMessage: null,
-      isError: false,
+      isTitleError: false,
+      isDescError: false,
+      showCreateTodo: false,
     }
   },
 
   methods: {
     onAdd() {
       if (!this.todoTitle) {
-        console.log("Can't add empty string")
-        this.onError("Can't add empty string.")
+        console.log("here")
+        this.isTitleError = true
+        return
+      }
+
+      if (!this.todoDesc) {
+        this.onError("Can't add empty description.")
+        this.isDescError = true
         return
       }
 
       let newTodo = {
         title: this.todoTitle,
+        desc: this.todoDesc,
         id: Date.now(),
         done: false,
       }
@@ -49,6 +93,11 @@ export default {
       this.todos.push(newTodo)
 
       this.todoTitle = null
+      this.todoDesc = null
+      this.isTitleError = null
+      this.isDescError = null
+
+      this.showCreateTodo = false
     },
 
     onDone(id) {
@@ -74,13 +123,26 @@ export default {
       })
     },
 
-    onError(message) {
-      this.isError = true
-      this.errorMessage = message
-      setTimeout(() => {
-        this.isError = false
-        this.errorMessage = null
-      }, 1000)
+    onError() {},
+
+    onCreate() {
+      this.showCreateTodo = true
+    },
+
+    onCancel() {
+      this.showCreateTodo = false
+      this.todoTitle = null
+      this.todoDesc = null
+      this.isTitleError = null
+      this.isDescError = null
+    },
+
+    onTitleInput(val) {
+      this.todoTitle = val
+    },
+
+    onDescInput(val) {
+      this.todoDesc = val
     },
   },
 
@@ -93,18 +155,34 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+.todoApp {
   color: $text-primary;
-  margin-top: 70px;
   background: $bg-primary;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.darkMode {
-  background: black;
-  color: white;
+.todoApp__main {
+  padding: 0rem 10rem;
+}
+.todoApp__button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.todoApp__list {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.todoApp__list > :not(:nth-child(4n)) {
+  margin-right: $gap;
+}
+
+.todoApp__list > * {
+  margin-bottom: $gap;
 }
 </style>

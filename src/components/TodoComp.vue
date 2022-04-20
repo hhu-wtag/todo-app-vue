@@ -1,8 +1,15 @@
 <template>
   <div>
-    <h1 v-if="!isEditing" :class="{ done: isDone }">
-      {{ todo.title }}
-    </h1>
+    <router-link
+      :to="{
+        name: 'details',
+        params: { id: todo.id, todo, inDetailedMode: true },
+      }"
+    >
+      <h1 v-if="!isEditing" :class="{ done: isDone }">
+        {{ todo.title }}
+      </h1>
+    </router-link>
 
     <p>{{ todo.desc }}</p>
 
@@ -17,6 +24,7 @@
       identifier="todoButtons"
       :todo="todo"
       :isEditing="isEditing"
+      :inDetailedMode="inDetailedMode"
       @done="onDone"
       @delete="onDelete"
       @edit="onEdit"
@@ -34,6 +42,10 @@ export default {
   props: {
     todo: {
       type: Object,
+    },
+
+    inDetailedMode: {
+      type: Boolean,
     },
   },
   components: {
@@ -54,6 +66,11 @@ export default {
       this.isEditing = false
       this.isDone = true
       this.$emit("done", this.todo.id)
+
+      if (this.inDetailedMode) {
+        console.log("now in detail mode")
+        this.$emit("done-c")
+      }
     },
     onDelete() {
       this.$emit("delete", this.todo.id)

@@ -3,7 +3,9 @@
     <TodoButton v-if="!todo.done" @click="onDone">Done</TodoButton>
     <TodoButton @click="onDelete">Delete</TodoButton>
 
-    <TodoButton v-if="!isEditing && !todo.done" @click="onEdit"
+    <TodoButton
+      v-if="!isEditing && !todo.done && inDetailedMode"
+      @click="onEdit"
       >Edit</TodoButton
     >
 
@@ -28,6 +30,10 @@ export default {
       type: String,
     },
     isEditing: {
+      type: Boolean,
+    },
+
+    inDetailedMode: {
       type: Boolean,
     },
   },

@@ -2,7 +2,6 @@
   <div class="todoApp">
     <div class="todoApp__header">Header</div>
     <div class="todoApp__main">
-      <router-link to="/details">Details</router-link>
       <p>Add Tasks</p>
       <div class="todoApp__button">
         <button class="todoApp__button_createButton" @click="onCreate">
@@ -33,25 +32,22 @@
           @cancel="onCancel"
         />
 
-        <router-link
-          to="/details"
+        <TodoComp
           v-for="todo of todos"
           :key="todo.id"
           class="card"
-        >
-          <TodoComp
-            :todo="todo"
-            @done="onDone"
-            @delete="onDelete"
-            @update="onUpdate"
-          />
-        </router-link>
+          :todo="todo"
+          :inDetailedMode="false"
+          @done="onDone"
+          @delete="onDelete"
+          @update="onUpdate"
+        />
       </div>
     </div>
 
-    <div class="todoApp__footer">
+    <!-- <div class="todoApp__footer">
       <button class="todoApp__footer_loadMore">Load More</button>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -99,9 +95,9 @@ export default {
         done: false,
       }
 
-      this.$emit("add-todo", newTodo)
+      this.todos.push(newTodo)
 
-      this.todos = [...this.$attrs.todos]
+      this.$emit("update", this.todos)
 
       this.todoTitle = null
       this.todoDesc = null
@@ -117,12 +113,15 @@ export default {
       Vue.set(this.todos, index, {
         ...this.todos[index],
         done: true,
-        inEditState: false,
       })
+
+      this.$emit("update", this.todos)
     },
 
     onDelete(id) {
       this.todos = this.todos.filter((item) => item.id !== id)
+
+      this.$emit("on-update", this.todos)
     },
 
     onUpdate(id, editText) {
@@ -132,6 +131,8 @@ export default {
         ...this.todos[index],
         title: editText,
       })
+
+      this.$emit("update", this.todos)
     },
 
     onError() {},
@@ -161,9 +162,6 @@ export default {
 
 <style lang="scss">
 .todoApp {
-  color: $text-primary;
-  background: $bg-primary;
-  height: 100%;
   display: flex;
   flex-direction: column;
 }

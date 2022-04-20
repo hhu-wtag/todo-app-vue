@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <router-view :todos="todos" @add-todo="onAdd"></router-view>
+  <div id="app" class="todo__container">
+    <router-view :todos="todos" @update="onUpdate"></router-view>
   </div>
 </template>
 
@@ -13,11 +13,17 @@ export default {
   },
 
   methods: {
-    onAdd(newTodo) {
-      this.todos.push(newTodo)
+    onUpdate(todos) {
+      this.todos = [...todos]
     },
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.todo__container {
+  color: $text-primary;
+  background: $bg-primary;
+  height: 100%;
+}
+</style>

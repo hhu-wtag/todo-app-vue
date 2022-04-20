@@ -5,7 +5,7 @@ import DetailsVue from "@/pages/DetailsVue.vue"
 
 const routes = [
   { path: "/", component: MainVue },
-  { path: "/details", component: DetailsVue },
+  { name: "details", path: "/details", component: DetailsVue, props: true },
 ]
 
 const router = new VueRouter({

@@ -37,11 +37,14 @@ export default new Vuex.Store({
       }
     },
 
-    filterTodos: (state) => (option) => {
-      if (option === "all") return state.todos
-      else if (option === "com") return state.todos.filter((todo) => todo.done)
-      else return state.todos.filter((todo) => !todo.done)
-    },
+    filterTodos:
+      (state) =>
+      (option = "all") => {
+        if (option === "all") return state.todos
+        else if (option === "com")
+          return state.todos.filter((todo) => todo.done)
+        else return state.todos.filter((todo) => !todo.done)
+      },
   },
 
   mutations: {

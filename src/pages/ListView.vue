@@ -80,7 +80,13 @@ export default {
   },
 
   created() {
-    this.todos = this.allTodos
+    this.todos = [...this.allTodos]
+  },
+
+  watch: {
+    allTodos: function () {
+      this.todos = [...this.allTodos]
+    },
   },
 
   methods: {
@@ -112,17 +118,17 @@ export default {
 
     onAll() {
       this.activeFilter = "all"
-      this.todos = this.$store.getters.filterTodos("all")
+      this.todos = [...this.$store.getters.filterTodos("all")]
     },
 
     onComplete() {
       this.activeFilter = "com"
-      this.todos = this.$store.getters.filterTodos("com")
+      this.todos = [...this.$store.getters.filterTodos("com")]
     },
 
     onInComplete() {
       this.activeFilter = "inc"
-      this.todos = this.$store.getters.filterTodos("inc")
+      this.todos = [...this.$store.getters.filterTodos("inc")]
     },
 
     renderAll() {

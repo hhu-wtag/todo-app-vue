@@ -50,10 +50,10 @@ export default {
     onDone() {
       this.isEditing = false
 
-      this.$store.dispatch("doneAction", this.todo.id)
+      this.$store.dispatch("setTodoDone", this.todo.id)
     },
     onDelete() {
-      this.$store.dispatch("deleteAction", this.todo.id)
+      this.$store.dispatch("removeTodoItem", this.todo.id)
     },
     onEdit() {
       this.isEditing = true
@@ -65,7 +65,7 @@ export default {
         return
       }
 
-      this.$store.dispatch("updateAction", this.todo.id, this.editText)
+      this.$store.dispatch("setTodoUpdate", this.todo.id, this.editText)
     },
     onCancel() {
       this.isEditing = false

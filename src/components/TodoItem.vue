@@ -67,7 +67,7 @@ export default {
       this.isEditing = false
       this.isDone = true
 
-      this.$store.dispatch("doneAction", { id: this.todo.id })
+      this.$store.dispatch("setTodoDone", { id: this.todo.id })
 
       if (this.inDetailedMode) {
         this.$router.replace("/")
@@ -75,7 +75,7 @@ export default {
     },
     onDelete() {
       if (this.inDetailedMode) {
-        this.$store.dispatch("deleteAction", { id: this.todo.id })
+        this.$store.dispatch("removeTodoItem", { id: this.todo.id })
         this.$router.replace("/")
       }
 
@@ -92,7 +92,7 @@ export default {
     },
 
     onEditUpdate(title, desc) {
-      this.$store.dispatch("updateAction", {
+      this.$store.dispatch("setTodoUpdate", {
         id: this.todo.id,
         editedTitle: title,
         editedDesc: desc,

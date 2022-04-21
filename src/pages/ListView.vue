@@ -101,7 +101,7 @@ export default {
     onDelete() {
       this.showModal = false
 
-      this.$store.dispatch("deleteAction", this.todoItemToBeDeleted)
+      this.$store.dispatch("removeTodoItem", this.todoItemToBeDeleted)
     },
 
     onCreate() {
@@ -126,17 +126,17 @@ export default {
 
     onAll() {
       this.activeFilter = "all"
-      this.todos = [...this.$store.getters.filterTodos("all")]
+      this.todos = [...this.$store.getters.getFilterTodos("all")]
     },
 
     onComplete() {
       this.activeFilter = "com"
-      this.todos = [...this.$store.getters.filterTodos("com")]
+      this.todos = [...this.$store.getters.getFilterTodos("com")]
     },
 
     onInComplete() {
       this.activeFilter = "inc"
-      this.todos = [...this.$store.getters.filterTodos("inc")]
+      this.todos = [...this.$store.getters.getFilterTodos("inc")]
     },
 
     renderAll() {

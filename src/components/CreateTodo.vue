@@ -90,7 +90,7 @@ export default {
         return
       }
 
-      this.$store.dispatch("addAction", {
+      this.$store.dispatch("addTodoItem", {
         title: this.title,
         desc: this.description,
       })

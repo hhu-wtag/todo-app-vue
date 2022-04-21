@@ -1,10 +1,10 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import {
-  ADD_MUTATION,
-  DONE_MUTATION,
-  DELETE_MUTATION,
-  UPDATE_MUTATION,
+  ADD_TODO,
+  SET_DONE,
+  SET_UPDATE,
+  REMOVE_TODO,
 } from "./mutation-types.js"
 
 Vue.use(Vuex)
@@ -37,7 +37,7 @@ export default new Vuex.Store({
       }
     },
 
-    filterTodos:
+    getFilterTodos:
       (state) =>
       (option = "all") => {
         if (option === "all") return state.todos
@@ -48,7 +48,7 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    [ADD_MUTATION](state, payload) {
+    [ADD_TODO](state, payload) {
       state.todos.push({
         title: payload.title,
         desc: payload.desc,
@@ -57,7 +57,7 @@ export default new Vuex.Store({
       })
     },
 
-    [DONE_MUTATION](state, payload) {
+    [SET_DONE](state, payload) {
       let index = state.todos.findIndex((todo) => todo.id === payload.id)
 
       Vue.set(state.todos, index, {
@@ -66,11 +66,11 @@ export default new Vuex.Store({
       })
     },
 
-    [DELETE_MUTATION](state, payload) {
+    [REMOVE_TODO](state, payload) {
       state.todos = state.todos.filter((item) => item.id !== payload.id)
     },
 
-    [UPDATE_MUTATION](state, payload) {
+    [SET_UPDATE](state, payload) {
       let index = state.todos.findIndex((todo) => todo.id === payload.id)
 
       Vue.set(state.todos, index, {
@@ -84,20 +84,20 @@ export default new Vuex.Store({
   /* eslint-disable */
 
   actions: {
-    addAction({ commit }, payload) {
-      commit(ADD_MUTATION, payload)
+    addTodoItem({ commit }, payload) {
+      commit(ADD_TODO, payload)
     },
 
-    doneAction({ commit }, payload) {
-      commit(DONE_MUTATION, payload)
+    setTodoDone({ commit }, payload) {
+      commit(SET_DONE, payload)
     },
 
-    deleteAction({ commit }, payload) {
-      commit(DELETE_MUTATION, payload)
+    removeTodoItem({ commit }, payload) {
+      commit(REMOVE_TODO, payload)
     },
 
-    updateAction({ commit }, payload) {
-      commit(UPDATE_MUTATION, payload)
+    setTodoUpdate({ commit }, payload) {
+      commit(SET_UPDATE, payload)
     },
   },
 })

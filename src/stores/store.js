@@ -26,6 +26,7 @@ export default new Vuex.Store({
     [ADD_MUTATION](state, payload) {
       state.todos.push({
         title: payload.title,
+        desc: payload.desc,
         id: Date.now(),
         done: false,
       })
@@ -57,20 +58,20 @@ export default new Vuex.Store({
   /* eslint-disable */
 
   actions: {
-    addAction({ commit }, title) {
-      commit(ADD_MUTATION, { title })
+    addAction({ commit }, payload) {
+      commit(ADD_MUTATION, payload)
     },
 
-    doneAction({ commit }, id) {
-      commit(DONE_MUTATION, { id })
+    doneAction({ commit }, payload) {
+      commit(DONE_MUTATION, payload)
     },
 
-    deleteAction({ commit }, id) {
-      commit(DELETE_MUTATION, { id })
+    deleteAction({ commit }, payload) {
+      commit(DELETE_MUTATION, payload)
     },
 
-    updateAction({ commit }, id, title) {
-      commit(UPDATE_MUTATION, { id, title })
+    updateAction({ commit }, payload) {
+      commit(UPDATE_MUTATION, payload)
     },
   },
 })

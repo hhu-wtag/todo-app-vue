@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="todo__container">
     <NavBar />
-    <router-view :todos="todos" @update="onUpdate"></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -11,17 +11,6 @@ import NavBar from "./components/NavBar.vue"
 export default {
   components: {
     NavBar,
-  },
-  data() {
-    return {
-      todos: [],
-    }
-  },
-
-  methods: {
-    onUpdate(todos) {
-      this.todos = [...todos]
-    },
   },
 }
 </script>

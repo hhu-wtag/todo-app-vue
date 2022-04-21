@@ -24,27 +24,15 @@
       </div>
 
       <div class="todoApp__list">
-        <CreateTodo
-          v-if="showCreateTodo"
-          :todoTitle="todoTitle"
-          :todoDesc="todoDesc"
-          :isTitleError="isTitleError"
-          :isDescError="isDescError"
-          @title-input="onTitleInput"
-          @desc-input="onDescInput"
-          @add="onAdd"
-          @cancel="onCancel"
-        />
+        <CreateTodo v-if="showCreateTodo" @cancel="onCancel" />
 
         <TodoItem
           v-for="todo of todos"
-          :key="todo.id"
           class="card"
+          :key="todo.id"
           :todo="todo"
           :inDetailedMode="false"
-          @done="onDone"
           @delete="openModal"
-          @update="onUpdate"
         />
       </div>
     </div>
@@ -53,7 +41,7 @@
 
 <script>
 import Vue from "vue"
-
+import { mapGetters } from "vuex"
 import TodoItem from "../components/TodoItem"
 import CreateTodo from "../components/CreateTodo.vue"
 import ModalDialogue from "@/components/ModalDialogue.vue"
@@ -64,51 +52,19 @@ export default {
     return {
       todoTitle: null,
       todoDesc: null,
-      todos: [],
-      isTitleError: false,
-      isDescError: false,
       showCreateTodo: false,
       showModal: false,
       todoItemToBeDeleted: null,
     }
   },
 
-  created() {
-    this.todos = [...this.$attrs.todos]
+  computed: {
+    ...mapGetters({
+      todos: "getTodos",
+    }),
   },
 
   methods: {
-    onAdd() {
-      if (!this.todoTitle) {
-        this.isTitleError = true
-        return
-      }
-
-      if (!this.todoDesc) {
-        this.onError("Can't add empty description.")
-        this.isDescError = true
-        return
-      }
-
-      let newTodo = {
-        title: this.todoTitle,
-        desc: this.todoDesc,
-        id: Date.now(),
-        done: false,
-      }
-
-      this.todos.push(newTodo)
-
-      this.$emit("update", this.todos)
-
-      this.todoTitle = null
-      this.todoDesc = null
-      this.isTitleError = null
-      this.isDescError = null
-
-      this.showCreateTodo = false
-    },
-
     onDone(id) {
       let index = this.todos.findIndex((todo) => todo.id === id)
 
@@ -121,13 +77,9 @@ export default {
     },
 
     onDelete() {
-      this.todos = this.todos.filter(
-        (item) => item.id !== this.todoItemToBeDeleted
-      )
-
       this.showModal = false
 
-      this.$emit("on-update", this.todos)
+      this.$store.dispatch("deleteAction", this.todoItemToBeDeleted)
     },
 
     onUpdate(id, editText) {
@@ -149,16 +101,6 @@ export default {
       this.showCreateTodo = false
       this.todoTitle = null
       this.todoDesc = null
-      this.isTitleError = null
-      this.isDescError = null
-    },
-
-    onTitleInput(val) {
-      this.todoTitle = val
-    },
-
-    onDescInput(val) {
-      this.todoDesc = val
     },
 
     openModal(id) {

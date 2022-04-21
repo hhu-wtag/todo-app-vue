@@ -5,25 +5,21 @@
       <input
         type="text"
         class="createTodo__inputBox_titleInput"
-        :value="todoTitle"
-        @input="$emit('title-input', $event.target.value)"
+        v-model.trim="title"
       />
       <span v-show="isTitleError">Title is required.</span>
 
       <label for="createTodo__inputBox_descLabel">Description</label>
       <textarea
         class="createTodo__inputBox_descInput"
-        :value="todoDesc"
-        @input="$emit('desc-input', $event.target.value)"
+        v-model.trim="description"
       />
       <span v-show="isDescError">Description is required.</span>
     </div>
 
     <div class="createTodo__button">
-      <button class="createTodo__button_add btn" @click="$emit('add')">
-        Add
-      </button>
-      <div class="createTodo__button_cancel btn" @click="$emit('cancel')">
+      <button class="createTodo__button_add btn" @click="onAdd">Add</button>
+      <div class="createTodo__button_cancel btn" @click="onCancel">
         <DeleteIcon />
       </div>
     </div>
@@ -37,22 +33,38 @@ export default {
   components: {
     DeleteIcon,
   },
-  props: {
-    todoTitle: {
-      type: String,
-      required: true,
+
+  data() {
+    return {
+      title: null,
+      description: null,
+      isTitleError: false,
+      isDescError: false,
+    }
+  },
+
+  methods: {
+    onAdd() {
+      if (!this.title) {
+        this.isTitleError = true
+        return
+      }
+
+      if (!this.description) {
+        this.isDescError = true
+        return
+      }
+
+      this.$store.dispatch("addAction", {
+        title: this.title,
+        desc: this.description,
+      })
+
+      this.onCancel()
     },
-    todoDesc: {
-      type: String,
-      required: true,
-    },
-    isTitleError: {
-      type: Boolean,
-      default: false,
-    },
-    isDescError: {
-      type: Boolean,
-      default: false,
+
+    onCancel() {
+      this.$emit("cancel")
     },
   },
 }

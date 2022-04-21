@@ -2,14 +2,22 @@
   <div class="todo">
     <div class="todo__header">
       <div v-if="!isEditing">
-        <router-link :to="`/details/${todo.id}`">
+        <router-link v-if="!inDetailedMode" :to="`/details/${todo.id}`">
           <h1 class="todo__header_title" :class="{ done: todo.done }">
-            <span v-if="inDetailedMode">Title: </span>{{ todo.title }}
+            {{ todo.title }}
           </h1>
         </router-link>
 
-        <p class="todo__header_desc">
-          <span v-if="inDetailedMode">Description: </span>{{ todo.desc }}
+        <h1 v-else>
+          <span>Title: </span>{{ todoDetails && todoDetails.title }}
+        </h1>
+
+        <p class="todo__header_desc" v-if="!inDetailedMode">
+          <span>Description: </span>{{ todo.desc }}
+        </p>
+
+        <p class="todo__header_desc" v-else>
+          <span>Description: </span>{{ todoDetails && todoDetails.desc }}
         </p>
       </div>
       <CreateTodo
@@ -59,6 +67,13 @@ export default {
     return {
       editText: null,
       isEditing: false,
+      todoDetails: null,
+    }
+  },
+
+  created() {
+    if (this.inDetailedMode) {
+      this.todoDetails = this.todo
     }
   },
 
@@ -100,7 +115,15 @@ export default {
 
       this.isEditing = false
 
-      this.$router.replace("/")
+      let response = this.$store.getters.getTodo(this.todo.id)
+
+      console.log(response)
+
+      if (response.status === "ok") {
+        this.todoDetails = { ...response.todo }
+      }
+
+      // this.$router.replace("/")
     },
   },
 }

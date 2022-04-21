@@ -6,6 +6,8 @@
       @cancel="onModalCancel"
     />
     <div class="todoApp__main">
+      <EmptyStateIcon v-if="showEmptyState" class="todoApp__main_emptyState" />
+
       <p class="todoApp__main_title">Add Tasks</p>
       <div class="todoApp__button">
         <button class="todoApp__button_createButton btn" @click="onCreate">
@@ -58,9 +60,11 @@ import { mapGetters } from "vuex"
 import TodoItem from "../components/TodoItem"
 import CreateTodo from "../components/CreateTodo.vue"
 import ModalDialogue from "@/components/ModalDialogue.vue"
+import EmptyStateIcon from "../components/icons/EmptyStateIcon.vue"
 
 export default {
-  components: { TodoItem, CreateTodo, ModalDialogue },
+  // eslint-disable-next-line
+  components: { TodoItem, CreateTodo, ModalDialogue, EmptyStateIcon },
   data: function () {
     return {
       todoTitle: null,
@@ -77,6 +81,10 @@ export default {
     ...mapGetters({
       allTodos: "getTodos",
     }),
+
+    showEmptyState: function () {
+      return this.todos.length === 0 && !this.showCreateTodo
+    },
   },
 
   created() {
@@ -147,7 +155,14 @@ export default {
 }
 
 .todoApp__main {
+  // position: relative;
   padding: 65px 150px;
+
+  &_emptyState {
+    position: fixed;
+    left: calc(50% - 100px);
+    top: calc(40%);
+  }
 
   &_title {
     font-size: 30px;

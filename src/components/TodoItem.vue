@@ -38,21 +38,21 @@
 
 <script>
 import ActionButtons from "./ActionButtons"
-import InputBox from "./InputBox"
 
 export default {
   props: {
     todo: {
       type: Object,
+      required: true,
     },
 
     inDetailedMode: {
       type: Boolean,
+      default: false,
     },
   },
   components: {
     ActionButtons,
-    InputBox,
   },
 
   data() {
@@ -68,11 +68,6 @@ export default {
       this.isEditing = false
       this.isDone = true
       this.$emit("done", this.todo.id)
-
-      if (this.inDetailedMode) {
-        console.log("now in detail mode")
-        this.$emit("done-c")
-      }
     },
     onDelete() {
       this.$emit("delete", this.todo.id)

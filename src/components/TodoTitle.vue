@@ -7,9 +7,11 @@ export default {
   props: {
     done: {
       type: Boolean,
+      default: false,
     },
     title: {
       type: String,
+      default: null,
     },
   },
 }

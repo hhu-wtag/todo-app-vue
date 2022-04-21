@@ -5,7 +5,7 @@
       @done="onDone"
       @delete="onDelete"
       @update="onUpdate"
-      :inDetailedMode="inDetailedMode"
+      :inDetailedMode="true"
       class="card detailedView"
     />
 
@@ -16,11 +16,6 @@
 <script>
 import TodoItem from "@/components/TodoItem.vue"
 export default {
-  data() {
-    return {
-      todo: {},
-    }
-  },
   components: { TodoItem },
 
   methods: {

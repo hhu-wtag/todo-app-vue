@@ -8,7 +8,7 @@
         :value="todoTitle"
         @input="$emit('title-input', $event.target.value)"
       />
-      <span v-show="isTitleError">Can't add empty title.</span>
+      <span v-show="isTitleError">Title is required.</span>
 
       <label for="createTodo__inputBox_descLabel">Description</label>
       <textarea
@@ -16,7 +16,7 @@
         :value="todoDesc"
         @input="$emit('desc-input', $event.target.value)"
       />
-      <span v-show="isDescError">Can't add empty description.</span>
+      <span v-show="isDescError">Description is required.</span>
     </div>
 
     <div class="createTodo__button">
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import DeleteIcon from "@/components/icons/DeleteIcon.vue"
+import DeleteIcon from "@/components/icons/DeleteIcon"
 
 export default {
   components: {
@@ -40,9 +40,11 @@ export default {
   props: {
     todoTitle: {
       type: String,
+      required: true,
     },
     todoDesc: {
       type: String,
+      required: true,
     },
     isTitleError: {
       type: Boolean,
@@ -57,7 +59,7 @@ export default {
 </script>
 
 <style lang="scss">
-textarea {
+.createTodo__inputBox_descInput {
   resize: none;
   height: 5rem;
 }

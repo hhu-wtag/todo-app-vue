@@ -5,11 +5,11 @@
       <p>Are You Sure?</p>
 
       <div class="modal__main_button">
-        <button class="modal__main_button-primary btn" @click="$emit('yes')">
-          Yes
+        <button class="modal__main_button-primary btn" @click="onConfirm">
+          Confirm
         </button>
-        <button class="modal__main_button-secondary btn" @click="$emit('no')">
-          No
+        <button class="modal__main_button-secondary btn" @click="onCancel">
+          Cancel
         </button>
       </div>
     </div>
@@ -17,7 +17,17 @@
 </template>
 
 <script>
-export default {}
+export default {
+  methods: {
+    onConfirm() {
+      this.$emit("confirm")
+    },
+
+    onCancel() {
+      this.$emit("cancel")
+    },
+  },
+}
 </script>
 
 <style lang="scss">
@@ -28,11 +38,11 @@ export default {}
 }
 
 .modal__overlay {
-  position: absolute;
+  position: fixed;
   opacity: 0.5;
   top: 0;
   background-color: $text-secondary;
-  height: 90vh;
+  height: 100vh;
   width: 100vw;
 }
 

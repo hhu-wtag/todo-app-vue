@@ -1,6 +1,10 @@
 <template>
   <div class="todoApp">
-    <ModalVue v-if="showModal" @yes="onDelete" @no="onNo" />
+    <ModalDialogue
+      v-if="showModal"
+      @confirm="onDelete"
+      @cancel="onModalCancel"
+    />
     <div class="todoApp__main">
       <p class="todoApp__main_title">Add Tasks</p>
       <div class="todoApp__button">
@@ -44,10 +48,6 @@
         />
       </div>
     </div>
-
-    <!-- <div class="todoApp__footer">
-      <button class="todoApp__footer_loadMore">Load More</button>
-    </div> -->
   </div>
 </template>
 
@@ -56,10 +56,10 @@ import Vue from "vue"
 
 import TodoItem from "../components/TodoItem"
 import CreateTodo from "../components/CreateTodo.vue"
-import ModalVue from "@/components/ModalVue.vue"
+import ModalDialogue from "@/components/ModalDialogue.vue"
 
 export default {
-  components: { TodoItem, CreateTodo, ModalVue },
+  components: { TodoItem, CreateTodo, ModalDialogue },
   data: function () {
     return {
       todoTitle: null,
@@ -80,7 +80,6 @@ export default {
   methods: {
     onAdd() {
       if (!this.todoTitle) {
-        console.log("here")
         this.isTitleError = true
         return
       }
@@ -142,8 +141,6 @@ export default {
       this.$emit("update", this.todos)
     },
 
-    onError() {},
-
     onCreate() {
       this.showCreateTodo = true
     },
@@ -169,7 +166,7 @@ export default {
       this.showModal = true
     },
 
-    onNo() {
+    onModalCancel() {
       this.showModal = false
       this.todoItemToBeDeleted = null
     },

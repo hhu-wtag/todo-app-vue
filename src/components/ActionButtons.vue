@@ -1,48 +1,46 @@
 <template>
   <div class="actionButtons">
-    <TodoButton v-if="!todo.done" @click="onDone">
+    <TodoButton v-if="showDoneButton" @click="onDone">
       <DoneIcon />
     </TodoButton>
     <TodoButton @click="onDelete">
       <DeleteIcon />
     </TodoButton>
 
-    <TodoButton
-      v-if="!isEditing && !todo.done && inDetailedMode"
-      @click="onEdit"
-    >
+    <TodoButton v-if="showEditButton" @click="onEdit">
       <EditIcon />
     </TodoButton>
 
-    <TodoButton v-if="isEditing && !todo.done" @click="onUpdate"
-      >Update</TodoButton
-    >
+    <TodoButton v-if="showEditStateButton" @click="onUpdate">
+      <UpdateIcon />
+    </TodoButton>
 
-    <TodoButton v-if="isEditing && !todo.done" @click="onCancel"
-      >Cancel</TodoButton
-    >
+    <TodoButton v-if="showEditStateButton" @click="onCancel"
+      ><CancelIcon
+    /></TodoButton>
   </div>
 </template>
 
 <script>
 import TodoButton from "./TodoButton"
-import DoneIcon from "./icons/DoneIcon.vue"
-import DeleteIcon from "./icons/DeleteIcon.vue"
-import EditIcon from "./icons/EditIcon.vue"
+import DoneIcon from "./icons/DoneIcon"
+import DeleteIcon from "./icons/DeleteIcon"
+import EditIcon from "./icons/EditIcon"
+import CancelIcon from "./icons/CancelIcon"
+import UpdateIcon from "./icons/UpdateIcon"
 export default {
   props: {
     todo: {
       type: Object,
-    },
-    identifier: {
-      type: String,
+      required: true,
     },
     isEditing: {
       type: Boolean,
+      default: false,
     },
-
     inDetailedMode: {
       type: Boolean,
+      default: false,
     },
   },
   components: {
@@ -50,7 +48,24 @@ export default {
     DoneIcon,
     DeleteIcon,
     EditIcon,
+    CancelIcon,
+    UpdateIcon,
   },
+
+  computed: {
+    showEditButton() {
+      return !this.isEditing && !this.todo.done && this.inDetailedMode
+    },
+
+    showDoneButton() {
+      return !this.todo.done && !this.isEditing
+    },
+
+    showEditStateButton() {
+      return this.isEditing && !this.todo.done
+    },
+  },
+
   methods: {
     onDone() {
       this.$emit("done", this.todo.id)

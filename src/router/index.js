@@ -1,6 +1,6 @@
 import VueRouter from "vue-router"
 
-import ListView from "@/pages/MainVue.vue"
+import ListView from "@/pages/ListView.vue"
 import DetailsVue from "@/pages/DetailsVue.vue"
 
 const routes = [

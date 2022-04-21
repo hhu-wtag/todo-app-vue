@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import LogoIcon from "@/components/icons/LogoIcon.vue"
-import SearchIcon from "@/components/icons/SearchIcon.vue"
+import LogoIcon from "@/components/icons/LogoIcon"
+import SearchIcon from "@/components/icons/SearchIcon"
 
 export default {
   components: {

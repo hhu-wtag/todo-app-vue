@@ -11,10 +11,6 @@
       <EditIcon />
     </TodoButton>
 
-    <TodoButton v-if="showEditStateButton" @click="onUpdate">
-      <UpdateIcon />
-    </TodoButton>
-
     <TodoButton v-if="showEditStateButton" @click="onCancel"
       ><CancelIcon
     /></TodoButton>
@@ -27,7 +23,7 @@ import DoneIcon from "./icons/DoneIcon"
 import DeleteIcon from "./icons/DeleteIcon"
 import EditIcon from "./icons/EditIcon"
 import CancelIcon from "./icons/CancelIcon"
-import UpdateIcon from "./icons/UpdateIcon"
+
 export default {
   props: {
     todo: {
@@ -49,7 +45,6 @@ export default {
     DeleteIcon,
     EditIcon,
     CancelIcon,
-    UpdateIcon,
   },
 
   computed: {
@@ -76,9 +71,7 @@ export default {
     onEdit() {
       this.$emit("edit", this.todo.id)
     },
-    onUpdate() {
-      this.$emit("update", this.todo.id)
-    },
+
     onCancel() {
       this.$emit("cancel", this.todo.id)
     },

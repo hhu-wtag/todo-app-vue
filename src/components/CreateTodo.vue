@@ -18,8 +18,21 @@
     </div>
 
     <div class="createTodo__button">
-      <button class="createTodo__button_add btn" @click="onAdd">Add</button>
-      <div class="createTodo__button_cancel btn" @click="onCancel">
+      <button
+        v-if="!inDetailedMode"
+        class="createTodo__button_add btn"
+        @click="onAdd"
+      >
+        Add
+      </button>
+      <button v-else class="createTodo__button_add btn" @click="onUpdate">
+        Update
+      </button>
+      <div
+        v-if="!inDetailedMode"
+        class="createTodo__button_cancel btn"
+        @click="onCancel"
+      >
         <DeleteIcon />
       </div>
     </div>
@@ -32,6 +45,28 @@ import DeleteIcon from "@/components/icons/DeleteIcon"
 export default {
   components: {
     DeleteIcon,
+  },
+
+  props: {
+    inDetailedMode: {
+      type: Boolean,
+      default: false,
+    },
+
+    id: {
+      type: Number,
+    },
+  },
+
+  mounted() {
+    if (this.inDetailedMode) {
+      let { todo, status } = this.$store.getters.getTodo(this.id)
+
+      if (status === "ok") {
+        this.title = todo.title
+        this.description = todo.desc
+      }
+    }
   },
 
   data() {
@@ -60,7 +95,22 @@ export default {
         desc: this.description,
       })
 
+      this.$emit("add")
       this.onCancel()
+    },
+
+    onUpdate() {
+      if (!this.title) {
+        this.isTitleError = true
+        return
+      }
+
+      if (!this.description) {
+        this.isDescError = true
+        return
+      }
+
+      this.$emit("edit-update", this.title, this.description)
     },
 
     onCancel() {

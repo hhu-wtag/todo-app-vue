@@ -20,6 +20,28 @@ export default new Vuex.Store({
     getTodos(state) {
       return state.todos
     },
+
+    getTodo: (state) => (id) => {
+      const index = state.todos.findIndex((todo) => todo.id === parseInt(id))
+
+      if (index === -1) {
+        return {
+          status: "not-found",
+          todo: null,
+        }
+      } else {
+        return {
+          status: "ok",
+          todo: state.todos[index],
+        }
+      }
+    },
+
+    filterTodos: (state) => (option) => {
+      if (option === "all") return state.todos
+      else if (option === "com") return state.todos.filter((todo) => todo.done)
+      else return state.todos.filter((todo) => !todo.done)
+    },
   },
 
   mutations: {
@@ -50,7 +72,8 @@ export default new Vuex.Store({
 
       Vue.set(state.todos, index, {
         ...state.todos[index],
-        title: payload.editText,
+        title: payload.editedTitle,
+        desc: payload.editedDesc,
       })
     },
   },

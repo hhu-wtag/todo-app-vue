@@ -5,7 +5,7 @@ import DetailsVue from "@/pages/DetailsVue.vue"
 
 const routes = [
   { path: "/", component: ListView },
-  { name: "details", path: "/details/:id/:todo", component: DetailsVue },
+  { name: "details", path: "/details/:id", component: DetailsVue },
 ]
 
 const router = new VueRouter({

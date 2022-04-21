@@ -13,18 +13,32 @@
         </button>
 
         <div class="todoApp__button_filterButton">
-          <button class="todoApp__button_filterButton-all btn">All</button>
-          <button class="todoApp__button_filterButton-incomplete btn">
+          <button
+            class="todoApp__button_filterButton-all btn"
+            :class="{ activeFilter: activeFilter === 'all' }"
+            @click="onAll"
+          >
+            All
+          </button>
+          <button
+            class="todoApp__button_filterButton-incomplete btn"
+            :class="{ activeFilter: activeFilter === 'inc' }"
+            @click="onInComplete"
+          >
             Incomplete
           </button>
-          <button class="todoApp__button_filterButton-complete btn">
+          <button
+            class="todoApp__button_filterButton-complete btn"
+            :class="{ activeFilter: activeFilter === 'com' }"
+            @click="onComplete"
+          >
             Complete
           </button>
         </div>
       </div>
 
       <div class="todoApp__list">
-        <CreateTodo v-if="showCreateTodo" @cancel="onCancel" />
+        <CreateTodo v-if="showCreateTodo" @cancel="onCancel" @add="renderAll" />
 
         <TodoItem
           v-for="todo of todos"
@@ -40,7 +54,6 @@
 </template>
 
 <script>
-import Vue from "vue"
 import { mapGetters } from "vuex"
 import TodoItem from "../components/TodoItem"
 import CreateTodo from "../components/CreateTodo.vue"
@@ -52,45 +65,29 @@ export default {
     return {
       todoTitle: null,
       todoDesc: null,
+      todos: [],
       showCreateTodo: false,
       showModal: false,
       todoItemToBeDeleted: null,
+      activeFilter: "all",
     }
   },
 
   computed: {
     ...mapGetters({
-      todos: "getTodos",
+      allTodos: "getTodos",
     }),
   },
 
+  created() {
+    this.todos = this.allTodos
+  },
+
   methods: {
-    onDone(id) {
-      let index = this.todos.findIndex((todo) => todo.id === id)
-
-      Vue.set(this.todos, index, {
-        ...this.todos[index],
-        done: true,
-      })
-
-      this.$emit("update", this.todos)
-    },
-
     onDelete() {
       this.showModal = false
 
       this.$store.dispatch("deleteAction", this.todoItemToBeDeleted)
-    },
-
-    onUpdate(id, editText) {
-      let index = this.todos.findIndex((todo) => todo.id === id)
-
-      Vue.set(this.todos, index, {
-        ...this.todos[index],
-        title: editText,
-      })
-
-      this.$emit("update", this.todos)
     },
 
     onCreate() {
@@ -111,6 +108,26 @@ export default {
     onModalCancel() {
       this.showModal = false
       this.todoItemToBeDeleted = null
+    },
+
+    onAll() {
+      this.activeFilter = "all"
+      this.todos = this.$store.getters.filterTodos("all")
+    },
+
+    onComplete() {
+      this.activeFilter = "com"
+      this.todos = this.$store.getters.filterTodos("com")
+    },
+
+    onInComplete() {
+      this.activeFilter = "inc"
+      this.todos = this.$store.getters.filterTodos("inc")
+    },
+
+    renderAll() {
+      this.activeFilter = "all"
+      this.todos = this.allTodos
     },
   },
 }
@@ -157,6 +174,10 @@ export default {
   &_filterButton > button + button {
     margin-left: 20px;
   }
+}
+
+.activeFilter {
+  color: $text-accent;
 }
 
 .todoApp__list {

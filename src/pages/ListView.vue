@@ -63,7 +63,6 @@ import ModalDialogue from "@/components/ModalDialogue.vue"
 import EmptyStateIcon from "../components/icons/EmptyStateIcon.vue"
 
 export default {
-  // eslint-disable-next-line
   components: { TodoItem, CreateTodo, ModalDialogue, EmptyStateIcon },
   data: function () {
     return {
@@ -155,7 +154,6 @@ export default {
 }
 
 .todoApp__main {
-  // position: relative;
   padding: 65px 150px;
 
   &_emptyState {

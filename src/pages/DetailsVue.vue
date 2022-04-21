@@ -1,5 +1,10 @@
 <template>
   <div>
+    <ModalDialogue
+      v-if="showModal"
+      @confirm="onDelete"
+      @cancel="onModalCancel"
+    />
     <p v-if="noItem">No Item Found.</p>
 
     <TodoItem
@@ -7,6 +12,7 @@
       :todo="todoItem"
       :inDetailedMode="true"
       class="card detailedView"
+      @delete="onTodoDelete"
     />
 
     <div class="detail__goback">
@@ -17,22 +23,17 @@
 
 <script>
 import TodoItem from "@/components/TodoItem.vue"
-// import { mapGetters } from "vuex"
+import ModalDialogue from "@/components/ModalDialogue.vue"
 export default {
-  components: { TodoItem },
+  components: { TodoItem, ModalDialogue },
 
   data() {
     return {
       todoItem: null,
       noItem: false,
+      showModal: false,
     }
   },
-
-  // computed: {
-  //   ...mapGetters({
-  //     todo: "getTodo",
-  //   }),
-  // },
 
   created() {
     const response = this.$store.getters.getTodo(this.$route.params.id)
@@ -42,6 +43,24 @@ export default {
     } else {
       this.noItem = true
     }
+  },
+
+  methods: {
+    onModalCancel() {
+      this.showModal = false
+    },
+
+    onDelete() {
+      this.showModal = false
+
+      this.$store.dispatch("removeTodoItem", { id: this.todoItem.id })
+
+      this.$router.replace("/")
+    },
+
+    onTodoDelete() {
+      this.showModal = true
+    },
   },
 }
 </script>

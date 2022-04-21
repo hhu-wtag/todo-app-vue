@@ -89,11 +89,6 @@ export default {
       }
     },
     onDelete() {
-      if (this.inDetailedMode) {
-        this.$store.dispatch("removeTodoItem", { id: this.todo.id })
-        this.$router.replace("/")
-      }
-
       this.$emit("delete", { id: this.todo.id })
     },
     onEdit() {
@@ -116,8 +111,6 @@ export default {
       this.isEditing = false
 
       let response = this.$store.getters.getTodo(this.todo.id)
-
-      console.log(response)
 
       if (response.status === "ok") {
         this.todoDetails = { ...response.todo }

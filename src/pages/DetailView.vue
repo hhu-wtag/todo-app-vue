@@ -65,14 +65,6 @@ export default {
       this.showModal = true
     },
     async fetchTodo() {
-      // const { status, todo } = this.todo
-
-      // if (status === "ok") {
-      //   this.todoItem = todo
-      // } else {
-      //   this.noItem = true
-      // }
-
       let response = await this.$store.dispatch("getTodo", {
         id: this.$route.params.id,
       })

@@ -115,7 +115,7 @@ export default new Vuex.Store({
             .select("*")
             .order("created_at", { ascending: false })
         } catch (error) {
-          console.error(error)
+          throw new Error(error)
         }
 
         return response.data
@@ -130,7 +130,7 @@ export default new Vuex.Store({
 
         return response.data[0]
       } catch (error) {
-        console.error(error)
+        throw new Error(error)
       }
     },
 
@@ -141,7 +141,7 @@ export default new Vuex.Store({
 
         await dispatch("getAllTodo")
       } catch (error) {
-        console.error(error)
+        throw new Error(error)
       }
     },
 
@@ -154,7 +154,7 @@ export default new Vuex.Store({
 
         dispatch("getAllTodo")
       } catch (error) {
-        console.error(error)
+        throw new Error(error)
       }
     },
 
@@ -164,7 +164,7 @@ export default new Vuex.Store({
 
         dispatch("getAllTodo")
       } catch (error) {
-        console.error(error)
+        throw new Error(error)
       }
     },
 
@@ -177,7 +177,7 @@ export default new Vuex.Store({
 
         dispatch("getAllTodo")
       } catch (error) {
-        console.error(error)
+        throw new Error(error)
       }
     },
 

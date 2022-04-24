@@ -8,7 +8,7 @@
     <p v-if="noItem">No Item Found.</p>
 
     <TodoItem
-      v-if="!noItem && todoItem !== null"
+      v-if="showTodoItemComponent"
       :todo="todoItem"
       :inDetailMode="true"
       class="card detailedView"
@@ -45,6 +45,10 @@ export default {
 
     todo() {
       return this.getTodo(this.$route.params.id)
+    },
+
+    showTodoItemComponent() {
+      return !this.noItem && this.todoItem !== null
     },
   },
   created() {

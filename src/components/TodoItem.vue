@@ -70,13 +70,12 @@ export default {
   },
   computed: {
     isDone() {
-      return this.todo.done
+      return this.todo?.done
     },
   },
   methods: {
     onDone() {
       this.isEditing = false
-      this.isDone = true
 
       this.$store.dispatch("setTodoDone", { id: this.todo.id })
 

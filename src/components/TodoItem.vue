@@ -2,30 +2,28 @@
   <div class="todo">
     <div class="todo__header">
       <div v-if="!isEditing">
-        <router-link v-if="!inDetailedMode" :to="`/details/${todo.id}`">
-          <h1 class="todo__header_title" :class="{ done: todo.done }">
+        <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
+          <h1 class="todo__header_title" :class="{ done: isDone }">
             {{ todo.title }}
           </h1>
         </router-link>
 
-        <h1 v-else>
-          <span>Title: </span>{{ todoDetails && todoDetails.title }}
-        </h1>
+        <h1 v-else><span>Title: </span>{{ todo && todo.title }}</h1>
 
-        <p class="todo__header_desc" v-if="!inDetailedMode">
+        <p class="todo__header_desc" v-if="!inDetailMode">
           {{ todo.desc }}
         </p>
 
         <p class="todo__header_desc" v-else>
-          <span>Description: </span>{{ todoDetails && todoDetails.desc }}
+          <span>Description: </span>{{ todo && todo.desc }}
         </p>
       </div>
       <CreateTodo
         v-else
-        :inDetailedMode="inDetailedMode"
+        :inDetailMode="inDetailMode"
         :id="todo.id"
-        @edit-update="onEditUpdate"
-        :class="{ createTodo__detailed: inDetailedMode }"
+        @update="onEditUpdate"
+        :class="{ createTodo__detailed: inDetailMode }"
       />
     </div>
     <div class="todo__footer">
@@ -33,7 +31,7 @@
         identifier="todoButtons"
         :todo="todo"
         :isEditing="isEditing"
-        :inDetailedMode="inDetailedMode"
+        :inDetailMode="inDetailMode"
         @done="onDone"
         @delete="onDelete"
         @edit="onEdit"
@@ -45,7 +43,7 @@
 
 <script>
 import ActionButtons from "./ActionButtons"
-import CreateTodo from "./CreateTodo.vue"
+import CreateTodo from "./CreateTodo"
 
 export default {
   props: {
@@ -53,7 +51,7 @@ export default {
       type: Object,
       required: true,
     },
-    inDetailedMode: {
+    inDetailMode: {
       type: Boolean,
       default: false,
     },
@@ -62,7 +60,6 @@ export default {
     ActionButtons,
     CreateTodo,
   },
-
   data() {
     return {
       editText: null,
@@ -70,13 +67,11 @@ export default {
       todoDetails: null,
     }
   },
-
-  created() {
-    if (this.inDetailedMode) {
-      this.todoDetails = this.todo
-    }
+  computed: {
+    isDone() {
+      return this.todo.done
+    },
   },
-
   methods: {
     onDone() {
       this.isEditing = false
@@ -84,7 +79,7 @@ export default {
 
       this.$store.dispatch("setTodoDone", { id: this.todo.id })
 
-      if (this.inDetailedMode) {
+      if (this.inDetailMode) {
         this.$router.replace("/")
       }
     },
@@ -95,26 +90,17 @@ export default {
       this.isEditing = true
       this.editText = this.todo.title
     },
-
     onCancel() {
       this.isEditing = false
       this.editText = null
     },
-
     onEditUpdate(title, desc) {
       this.$store.dispatch("setTodoUpdate", {
         id: this.todo.id,
         editedTitle: title,
         editedDesc: desc,
       })
-
       this.isEditing = false
-
-      let response = this.$store.getters.getTodo(this.todo.id)
-
-      if (response.status === "ok") {
-        this.todoDetails = { ...response.todo }
-      }
     },
   },
 }

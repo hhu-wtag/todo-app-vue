@@ -1,11 +1,11 @@
 import VueRouter from "vue-router"
 
-import ListView from "@/pages/ListView.vue"
-import DetailsVue from "@/pages/DetailsVue.vue"
+import ListView from "@/pages/ListView"
+import DetailView from "@/pages/DetailView"
 
 const routes = [
   { path: "/", component: ListView },
-  { name: "details", path: "/details/:id", component: DetailsVue },
+  { name: "details", path: "/details/:id", component: DetailView },
 ]
 
 const router = new VueRouter({

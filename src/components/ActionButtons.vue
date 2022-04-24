@@ -34,7 +34,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    inDetailedMode: {
+    inDetailMode: {
       type: Boolean,
       default: false,
     },
@@ -46,21 +46,17 @@ export default {
     EditIcon,
     CancelIcon,
   },
-
   computed: {
     showEditButton() {
-      return !this.isEditing && !this.todo.done && this.inDetailedMode
+      return !this.isEditing && !this.todo.done && this.inDetailMode
     },
-
     showDoneButton() {
       return !this.todo.done && !this.isEditing
     },
-
     showEditStateButton() {
       return this.isEditing && !this.todo.done
     },
   },
-
   methods: {
     onDone() {
       this.$emit("done", this.todo.id)

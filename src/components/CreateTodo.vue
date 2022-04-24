@@ -19,7 +19,7 @@
 
     <div class="createTodo__button">
       <button
-        v-if="!inDetailedMode"
+        v-if="!inDetailMode"
         class="createTodo__button_add btn"
         @click="onAdd"
       >
@@ -29,7 +29,7 @@
         Update
       </button>
       <div
-        v-if="!inDetailedMode"
+        v-if="!inDetailMode"
         class="createTodo__button_cancel btn"
         @click="onCancel"
       >
@@ -41,34 +41,21 @@
 
 <script>
 import DeleteIcon from "@/components/icons/DeleteIcon"
+import { mapGetters } from "vuex"
 
 export default {
   components: {
     DeleteIcon,
   },
-
   props: {
-    inDetailedMode: {
+    inDetailMode: {
       type: Boolean,
       default: false,
     },
-
     id: {
       type: Number,
     },
   },
-
-  mounted() {
-    if (this.inDetailedMode) {
-      let { todo, status } = this.$store.getters.getTodo(this.id)
-
-      if (status === "ok") {
-        this.title = todo.title
-        this.description = todo.desc
-      }
-    }
-  },
-
   data() {
     return {
       title: null,
@@ -77,18 +64,26 @@ export default {
       isDescError: false,
     }
   },
+  computed: {
+    ...mapGetters(["getTodo"]),
 
+    todo() {
+      return this.getTodo(this.id)
+    },
+  },
+  mounted() {
+    if (this.inDetailMode) {
+      const { todo, status } = this.todo
+
+      if (status === "ok") {
+        this.title = todo.title
+        this.description = todo.desc
+      }
+    }
+  },
   methods: {
     onAdd() {
-      if (!this.title) {
-        this.isTitleError = true
-        return
-      }
-
-      if (!this.description) {
-        this.isDescError = true
-        return
-      }
+      if (!this.isValidate()) return
 
       this.$store.dispatch("addTodoItem", {
         title: this.title,
@@ -98,23 +93,27 @@ export default {
       this.$emit("add")
       this.onCancel()
     },
-
     onUpdate() {
+      if (!this.isValidate()) return
+
+      this.$emit("update", this.title, this.description)
+    },
+    onCancel() {
+      this.$emit("cancel")
+    },
+
+    isValidate() {
       if (!this.title) {
         this.isTitleError = true
-        return
+        return false
       }
 
       if (!this.description) {
         this.isDescError = true
-        return
+        return false
       }
 
-      this.$emit("edit-update", this.title, this.description)
-    },
-
-    onCancel() {
-      this.$emit("cancel")
+      return true
     },
   },
 }

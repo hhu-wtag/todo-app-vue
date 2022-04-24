@@ -61,15 +61,25 @@
         />
       </div>
     </div>
+
+    <div class="todoApp__footer">
+      <button
+        v-if="activeLoadMore"
+        class="btn todoApp__footer_loadMore"
+        @click="onLoadMore"
+      >
+        Load More
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex"
 import TodoItem from "../components/TodoItem"
-import CreateTodo from "../components/CreateTodo.vue"
-import ModalDialogue from "@/components/ModalDialogue.vue"
-import EmptyStateIcon from "../components/icons/EmptyStateIcon.vue"
+import CreateTodo from "../components/CreateTodo"
+import ModalDialogue from "@/components/ModalDialogue"
+import EmptyStateIcon from "../components/icons/EmptyStateIcon"
 
 export default {
   components: { TodoItem, CreateTodo, ModalDialogue, EmptyStateIcon },
@@ -84,10 +94,10 @@ export default {
       activeFilter: "all",
     }
   },
-
   computed: {
     ...mapGetters({
       allTodos: "getTodos",
+      activeLoadMore: "activeLoadMore",
     }),
 
     showEmptyState: function () {
@@ -98,62 +108,54 @@ export default {
       return this.allTodos.length === 0
     },
   },
-
   created() {
     this.todos = [...this.allTodos]
   },
-
   watch: {
     allTodos: function () {
       this.todos = [...this.allTodos]
     },
   },
-
   methods: {
     onDelete() {
       this.showModal = false
 
       this.$store.dispatch("removeTodoItem", this.todoItemToBeDeleted)
     },
-
     onCreate() {
       this.showCreateTodo = true
     },
-
     onCancel() {
       this.showCreateTodo = false
       this.todoTitle = null
       this.todoDesc = null
     },
-
     openModal(id) {
       this.todoItemToBeDeleted = id
       this.showModal = true
     },
-
     onModalCancel() {
       this.showModal = false
       this.todoItemToBeDeleted = null
     },
-
     onAll() {
       this.activeFilter = "all"
       this.todos = [...this.$store.getters.getFilterTodos("all")]
     },
-
     onComplete() {
       this.activeFilter = "com"
       this.todos = [...this.$store.getters.getFilterTodos("com")]
     },
-
     onInComplete() {
       this.activeFilter = "inc"
       this.todos = [...this.$store.getters.getFilterTodos("inc")]
     },
-
     renderAll() {
       this.activeFilter = "all"
       this.todos = this.allTodos
+    },
+    onLoadMore() {
+      this.$store.dispatch("setTodoLimit")
     },
   },
 }
@@ -225,5 +227,19 @@ export default {
 
 .todoApp__list > * {
   margin-bottom: $gap;
+}
+
+.todoApp__footer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  &_loadMore {
+    padding: 8px 18px;
+    border: 1px solid $border-primary;
+    background-color: $text-primary;
+    color: white;
+    font-weight: bold;
+  }
 }
 </style>

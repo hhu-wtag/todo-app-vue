@@ -10,7 +10,7 @@
     <TodoItem
       v-else
       :todo="todoItem"
-      :inDetailedMode="true"
+      :inDetailMode="true"
       class="card detailedView"
       @delete="onTodoDelete"
     />
@@ -22,8 +22,9 @@
 </template>
 
 <script>
-import TodoItem from "@/components/TodoItem.vue"
-import ModalDialogue from "@/components/ModalDialogue.vue"
+import TodoItem from "@/components/TodoItem"
+import ModalDialogue from "@/components/ModalDialogue"
+import { mapGetters } from "vuex"
 export default {
   components: { TodoItem, ModalDialogue },
 
@@ -34,22 +35,25 @@ export default {
       showModal: false,
     }
   },
-
-  created() {
-    const response = this.$store.getters.getTodo(this.$route.params.id)
-
-    if (response.status === "ok") {
-      this.todoItem = response.todo
-    } else {
-      this.noItem = true
-    }
+  watch: {
+    "$store.state.todos": function () {
+      this.fetchTodo()
+    },
   },
+  computed: {
+    ...mapGetters(["getTodo"]),
 
+    todo() {
+      return this.getTodo(this.$route.params.id)
+    },
+  },
+  created() {
+    this.fetchTodo()
+  },
   methods: {
     onModalCancel() {
       this.showModal = false
     },
-
     onDelete() {
       this.showModal = false
 
@@ -57,9 +61,17 @@ export default {
 
       this.$router.replace("/")
     },
-
     onTodoDelete() {
       this.showModal = true
+    },
+    fetchTodo() {
+      const { status, todo } = this.todo
+
+      if (status === "ok") {
+        this.todoItem = todo
+      } else {
+        this.noItem = true
+      }
     },
   },
 }

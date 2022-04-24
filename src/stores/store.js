@@ -5,6 +5,7 @@ import {
   SET_DONE,
   SET_UPDATE,
   REMOVE_TODO,
+  SET_LIMIT,
 } from "./mutation-types.js"
 
 Vue.use(Vuex)
@@ -13,12 +14,13 @@ export default new Vuex.Store({
   state: function () {
     return {
       todos: [],
+      limit: 4,
     }
   },
 
   getters: {
     getTodos(state) {
-      return state.todos
+      return state.todos.slice(0, state.limit)
     },
 
     getTodo: (state) => (id) => {
@@ -45,6 +47,10 @@ export default new Vuex.Store({
           return state.todos.filter((todo) => todo.done)
         else return state.todos.filter((todo) => !todo.done)
       },
+
+    activeLoadMore: (state) => {
+      return state.todos.length > state.limit
+    },
   },
 
   mutations: {
@@ -79,6 +85,10 @@ export default new Vuex.Store({
         desc: payload.editedDesc,
       })
     },
+
+    [SET_LIMIT](state) {
+      state.limit = state.limit + 4
+    },
   },
 
   /* eslint-disable */
@@ -98,6 +108,10 @@ export default new Vuex.Store({
 
     setTodoUpdate({ commit }, payload) {
       commit(SET_UPDATE, payload)
+    },
+
+    setTodoLimit({ commit }) {
+      commit(SET_LIMIT)
     },
   },
 })

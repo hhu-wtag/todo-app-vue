@@ -13,7 +13,7 @@
         </h1>
 
         <p class="todo__header_desc" v-if="!inDetailedMode">
-          <span>Description: </span>{{ todo.desc }}
+          {{ todo.desc }}
         </p>
 
         <p class="todo__header_desc" v-else>
@@ -115,8 +115,6 @@ export default {
       if (response.status === "ok") {
         this.todoDetails = { ...response.todo }
       }
-
-      // this.$router.replace("/")
     },
   },
 }

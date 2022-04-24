@@ -210,6 +210,7 @@ export default {
 
 .activeFilter {
   color: $text-accent;
+  border-bottom: 3px solid $border-primary !important;
 }
 
 .todoApp__list {

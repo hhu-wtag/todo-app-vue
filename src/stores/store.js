@@ -168,8 +168,17 @@ export default new Vuex.Store({
       }
     },
 
-    setTodoUpdate({ commit }, payload) {
-      console.log(payload)
+    async setTodoUpdate({ dispatch }, { id, editedTitle, editedDesc }) {
+      try {
+        const response = await supabase
+          .from("Todo")
+          .update({ title: editedTitle, desc: editedDesc })
+          .eq("id", id)
+
+        dispatch("getAllTodo")
+      } catch (error) {
+        console.error(error)
+      }
     },
 
     setTodoLimit({ commit }) {

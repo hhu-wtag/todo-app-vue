@@ -21,6 +21,7 @@
       <CreateTodo
         v-else
         :inDetailMode="inDetailMode"
+        :todoItem="todo"
         :id="todo.id"
         @update="onEditUpdate"
         :class="{ createTodo__detailed: inDetailMode }"
@@ -94,8 +95,8 @@ export default {
       this.isEditing = false
       this.editText = null
     },
-    onEditUpdate(title, desc) {
-      this.$store.dispatch("setTodoUpdate", {
+    async onEditUpdate(title, desc) {
+      await this.$store.dispatch("setTodoUpdate", {
         id: this.todo.id,
         editedTitle: title,
         editedDesc: desc,

@@ -53,7 +53,11 @@ export default {
       default: false,
     },
     id: {
-      type: Number,
+      type: String,
+    },
+
+    todoItem: {
+      type: Object,
     },
   },
   data() {
@@ -73,12 +77,8 @@ export default {
   },
   mounted() {
     if (this.inDetailMode) {
-      const { todo, status } = this.todo
-
-      if (status === "ok") {
-        this.title = todo.title
-        this.description = todo.desc
-      }
+      this.title = this.todoItem.title
+      this.description = this.todoItem.desc
     }
   },
   methods: {

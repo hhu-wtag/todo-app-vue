@@ -17,22 +17,31 @@
         <div class="todoApp__button_filterButton">
           <button
             class="todoApp__button_filterButton-all btn"
-            :class="{ activeFilter: activeFilter === 'all' }"
+            :class="{
+              activeFilter: activeFilter === 'all' && !disableFilterButton,
+            }"
             @click="onAll"
+            :disabled="disableFilterButton"
           >
             All
           </button>
           <button
             class="todoApp__button_filterButton-incomplete btn"
-            :class="{ activeFilter: activeFilter === 'inc' }"
+            :class="{
+              activeFilter: activeFilter === 'inc' && !disableFilterButton,
+            }"
             @click="onInComplete"
+            :disabled="disableFilterButton"
           >
             Incomplete
           </button>
           <button
             class="todoApp__button_filterButton-complete btn"
-            :class="{ activeFilter: activeFilter === 'com' }"
+            :class="{
+              activeFilter: activeFilter === 'com' && !disableFilterButton,
+            }"
             @click="onComplete"
+            :disabled="disableFilterButton"
           >
             Complete
           </button>
@@ -83,6 +92,10 @@ export default {
 
     showEmptyState: function () {
       return this.todos.length === 0 && !this.showCreateTodo
+    },
+
+    disableFilterButton: function () {
+      return this.allTodos.length === 0
     },
   },
 

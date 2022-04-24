@@ -48,28 +48,28 @@ export default {
   },
   computed: {
     showEditButton() {
-      return !this.isEditing && !this.todo.done && this.inDetailMode
+      return !this.isEditing && !this.todo?.done && this.inDetailMode
     },
     showDoneButton() {
-      return !this.todo.done && !this.isEditing
+      return !this.todo?.done && !this.isEditing
     },
     showEditStateButton() {
-      return this.isEditing && !this.todo.done
+      return this.isEditing && !this.todo?.done
     },
   },
   methods: {
     onDone() {
-      this.$emit("done", this.todo.id)
+      this.$emit("done", this.todo?.id)
     },
     onDelete() {
-      this.$emit("delete", this.todo.id)
+      this.$emit("delete", this.todo?.id)
     },
     onEdit() {
-      this.$emit("edit", this.todo.id)
+      this.$emit("edit", this.todo?.id)
     },
 
     onCancel() {
-      this.$emit("cancel", this.todo.id)
+      this.$emit("cancel", this.todo?.id)
     },
   },
 }

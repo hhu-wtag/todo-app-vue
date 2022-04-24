@@ -8,7 +8,7 @@
     <p v-if="noItem">No Item Found.</p>
 
     <TodoItem
-      v-else
+      v-if="!noItem && todoItem !== null"
       :todo="todoItem"
       :inDetailMode="true"
       class="card detailedView"
@@ -64,14 +64,20 @@ export default {
     onTodoDelete() {
       this.showModal = true
     },
-    fetchTodo() {
-      const { status, todo } = this.todo
+    async fetchTodo() {
+      // const { status, todo } = this.todo
 
-      if (status === "ok") {
-        this.todoItem = todo
-      } else {
-        this.noItem = true
-      }
+      // if (status === "ok") {
+      //   this.todoItem = todo
+      // } else {
+      //   this.noItem = true
+      // }
+
+      let response = await this.$store.dispatch("getTodo", {
+        id: this.$route.params.id,
+      })
+
+      this.todoItem = response
     },
   },
 }

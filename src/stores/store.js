@@ -6,7 +6,10 @@ import {
   SET_UPDATE,
   REMOVE_TODO,
   SET_LIMIT,
+  SET_TODO,
+  RESET_LIMIT,
 } from "./mutation-types.js"
+import supabase from "@/utils/supabase"
 
 Vue.use(Vuex)
 
@@ -42,10 +45,11 @@ export default new Vuex.Store({
     getFilterTodos:
       (state) =>
       (option = "all") => {
-        if (option === "all") return state.todos
+        if (option === "all") return state.todos.slice(0, state.limit)
         else if (option === "com")
-          return state.todos.filter((todo) => todo.done)
-        else return state.todos.filter((todo) => !todo.done)
+          return state.todos.filter((todo) => todo.done).slice(0, state.limit)
+        else
+          return state.todos.filter((todo) => !todo.done).slice(0, state.limit)
       },
 
     activeLoadMore: (state) => {
@@ -89,25 +93,83 @@ export default new Vuex.Store({
     [SET_LIMIT](state) {
       state.limit = state.limit + 4
     },
+
+    [SET_TODO](state, payload) {
+      state.todos = payload
+    },
+
+    [RESET_LIMIT](state) {
+      state.limit = 4
+    },
   },
 
   /* eslint-disable */
 
   actions: {
-    addTodoItem({ commit }, payload) {
-      commit(ADD_TODO, payload)
+    async getAllTodo({ commit }) {
+      async function getData() {
+        let response = null
+        try {
+          response = await supabase
+            .from("Todo")
+            .select("*")
+            .order("created_at", { ascending: false })
+        } catch (error) {
+          console.error(error)
+        }
+
+        return response.data
+      }
+
+      commit(SET_TODO, await getData())
     },
 
-    setTodoDone({ commit }, payload) {
-      commit(SET_DONE, payload)
+    async getTodo({ commit }, { id }) {
+      try {
+        let response = await supabase.from("Todo").select("*").eq("id", id)
+
+        return response.data[0]
+      } catch (error) {
+        console.error(error)
+      }
     },
 
-    removeTodoItem({ commit }, payload) {
-      commit(REMOVE_TODO, payload)
+    async addTodoItem({ dispatch }, { title, desc }) {
+      let response = null
+      try {
+        response = await supabase.from("Todo").insert([{ title, desc }])
+
+        await dispatch("getAllTodo")
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async setTodoDone({ dispatch }, { id }) {
+      try {
+        const response = await supabase
+          .from("Todo")
+          .update({ done: true })
+          .eq("id", id)
+
+        dispatch("getAllTodo")
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async removeTodoItem({ dispatch }, { id }) {
+      try {
+        const response = await supabase.from("Todo").delete().eq("id", id)
+
+        dispatch("getAllTodo")
+      } catch (error) {
+        console.error(error)
+      }
     },
 
     setTodoUpdate({ commit }, payload) {
-      commit(SET_UPDATE, payload)
+      console.log(payload)
     },
 
     setTodoLimit({ commit }) {

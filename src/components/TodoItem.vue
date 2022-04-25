@@ -1,5 +1,7 @@
 <template>
   <div class="todo">
+    <SpinnerIcon v-if="showSpinner" />
+
     <div class="todo__header">
       <div v-if="!isEditing">
         <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
@@ -45,6 +47,7 @@
 <script>
 import ActionButtons from "./ActionButtons"
 import CreateTodo from "./CreateTodo"
+import SpinnerIcon from "./icons/SpinnerIcon"
 
 export default {
   props: {
@@ -60,12 +63,14 @@ export default {
   components: {
     ActionButtons,
     CreateTodo,
+    SpinnerIcon,
   },
   data() {
     return {
       editText: null,
       isEditing: false,
       todoDetails: null,
+      showSpinner: false,
     }
   },
   computed: {
@@ -74,11 +79,11 @@ export default {
     },
   },
   methods: {
-    onDone() {
+    async onDone() {
       this.isEditing = false
-
-      this.$store.dispatch("setTodoDone", { id: this.todo.id })
-
+      this.showSpinner = true
+      await this.$store.dispatch("setTodoDone", { id: this.todo.id })
+      this.showSpinner = false
       if (this.inDetailMode) {
         this.$router.replace("/")
       }
@@ -113,6 +118,7 @@ export default {
 }
 
 .todo {
+  position: relative;
   justify-content: space-between;
 }
 

@@ -35,6 +35,7 @@ export default {
   position: relative;
   display: grid;
   place-items: center;
+  z-index: 15;
 }
 
 .modal__overlay {

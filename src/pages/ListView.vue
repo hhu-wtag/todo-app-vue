@@ -7,7 +7,7 @@
     />
     <div class="todoApp__main">
       <EmptyStateIcon v-if="showEmptyState" class="todoApp__main_emptyState" />
-
+      <SpinnerIcon v-if="showSpinner" class="spinner__listView" />
       <p class="todoApp__main_title">Add Tasks</p>
       <div class="todoApp__button">
         <button class="todoApp__button_createButton btn" @click="onCreate">
@@ -80,9 +80,16 @@ import TodoItem from "../components/TodoItem"
 import CreateTodo from "../components/CreateTodo"
 import ModalDialogue from "@/components/ModalDialogue"
 import EmptyStateIcon from "../components/icons/EmptyStateIcon"
+import SpinnerIcon from "@/components/icons/SpinnerIcon.vue"
 
 export default {
-  components: { TodoItem, CreateTodo, ModalDialogue, EmptyStateIcon },
+  components: {
+    TodoItem,
+    CreateTodo,
+    ModalDialogue,
+    EmptyStateIcon,
+    SpinnerIcon,
+  },
   data: function () {
     return {
       todoTitle: null,
@@ -101,10 +108,16 @@ export default {
     }),
 
     showEmptyState: function () {
-      return this.todos.length === 0 && !this.showCreateTodo
+      return (
+        this.todos.length === 0 && !this.showCreateTodo && !this.showSpinner
+      )
     },
 
     disableFilterButton: function () {
+      return this.allTodos.length === 0
+    },
+
+    showSpinner: function () {
       return this.allTodos.length === 0
     },
   },
@@ -184,6 +197,12 @@ export default {
     margin-bottom: 28px;
   }
 }
+
+.spinner__listView {
+  position: fixed;
+  top: 40%;
+}
+
 .todoApp__button {
   display: flex;
   width: 100%;
@@ -219,6 +238,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+  z-index: 10;
 }
 
 .todoApp__list > :not(:nth-child(4n)) {

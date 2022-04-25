@@ -8,6 +8,9 @@ import {
   SET_LIMIT,
   SET_TODO,
   RESET_LIMIT,
+  RESET_TODOS,
+  SET_SEARCH_DATA,
+  SET_SEARCH_STATE,
 } from "./mutation-types.js"
 import supabase from "@/utils/supabase"
 
@@ -18,6 +21,7 @@ export default new Vuex.Store({
     return {
       todos: [],
       limit: 4,
+      isSearching: false,
     }
   },
 
@@ -95,11 +99,23 @@ export default new Vuex.Store({
     },
 
     [SET_TODO](state, payload) {
-      state.todos = payload
+      state.todos = [...payload]
+    },
+
+    [RESET_TODOS](state) {
+      state.todos = []
     },
 
     [RESET_LIMIT](state) {
       state.limit = 4
+    },
+
+    [SET_SEARCH_DATA](state, payload) {
+      state.todos = [...payload]
+    },
+
+    [SET_SEARCH_STATE](state, payload) {
+      state.isSearching = payload.isSearching
     },
   },
 
@@ -183,6 +199,20 @@ export default new Vuex.Store({
 
     setTodoLimit({ commit }) {
       commit(SET_LIMIT)
+    },
+
+    async getSearchData({ commit }, payload) {
+      try {
+        const { data, error } = await supabase
+          .from("Todo")
+          .select()
+          .ilike("title", `%${payload.searchText}%`)
+          .order("created_at", { ascending: false })
+
+        commit(SET_SEARCH_DATA, data)
+      } catch (error) {
+        throw new Error(error)
+      }
     },
   },
 })

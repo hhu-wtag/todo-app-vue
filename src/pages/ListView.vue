@@ -9,56 +9,63 @@
       <EmptyStateIcon v-if="showEmptyState" class="todoApp__main_emptyState" />
       <SpinnerIcon v-if="showSpinner" class="spinner__listView" />
       <p class="todoApp__main_title">Add Tasks</p>
-      <div class="todoApp__button">
-        <button class="todoApp__button_createButton btn" @click="onCreate">
-          Create
-        </button>
 
-        <div class="todoApp__button_filterButton">
-          <button
-            class="todoApp__button_filterButton-all btn"
-            :class="{
-              activeFilter: activeFilter === 'all' && !disableFilterButton,
-            }"
-            @click="onAll"
-            :disabled="disableFilterButton"
-          >
-            All
+      <div class="todoApp__header" :class="{ disabled: showSpinner }">
+        <div class="todoApp__button">
+          <button class="todoApp__button_createButton btn" @click="onCreate">
+            Create
           </button>
-          <button
-            class="todoApp__button_filterButton-incomplete btn"
-            :class="{
-              activeFilter: activeFilter === 'inc' && !disableFilterButton,
-            }"
-            @click="onInComplete"
-            :disabled="disableFilterButton"
-          >
-            Incomplete
-          </button>
-          <button
-            class="todoApp__button_filterButton-complete btn"
-            :class="{
-              activeFilter: activeFilter === 'com' && !disableFilterButton,
-            }"
-            @click="onComplete"
-            :disabled="disableFilterButton"
-          >
-            Complete
-          </button>
+
+          <div class="todoApp__button_filterButton">
+            <button
+              class="todoApp__button_filterButton-all btn"
+              :class="{
+                activeFilter: activeFilter === 'all' && !disableFilterButton,
+              }"
+              @click="onAll"
+              :disabled="disableFilterButton"
+            >
+              All
+            </button>
+            <button
+              class="todoApp__button_filterButton-incomplete btn"
+              :class="{
+                activeFilter: activeFilter === 'inc' && !disableFilterButton,
+              }"
+              @click="onInComplete"
+              :disabled="disableFilterButton"
+            >
+              Incomplete
+            </button>
+            <button
+              class="todoApp__button_filterButton-complete btn"
+              :class="{
+                activeFilter: activeFilter === 'com' && !disableFilterButton,
+              }"
+              @click="onComplete"
+              :disabled="disableFilterButton"
+            >
+              Complete
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div class="todoApp__list">
-        <CreateTodo v-if="showCreateTodo" @cancel="onCancel" @add="renderAll" />
+        <div class="todoApp__list">
+          <CreateTodo
+            v-if="showCreateTodo"
+            @cancel="onCancel"
+            @add="renderAll"
+          />
 
-        <TodoItem
-          v-for="todo of todos"
-          class="card"
-          :key="todo.id"
-          :todo="todo"
-          :inDetailedMode="false"
-          @delete="openModal"
-        />
+          <TodoItem
+            v-for="todo of todos"
+            class="card"
+            :key="todo.id"
+            :todo="todo"
+            :inDetailedMode="false"
+            @delete="openModal"
+          />
+        </div>
       </div>
     </div>
 
@@ -99,6 +106,7 @@ export default {
       showModal: false,
       todoItemToBeDeleted: null,
       activeFilter: "all",
+      showLoader: false,
     }
   },
   computed: {
@@ -108,16 +116,17 @@ export default {
     }),
 
     showEmptyState: function () {
+      return this.todos.length === 0 && !this.showCreateTodo
+    },
+
+    showSpinner() {
       return (
-        this.todos.length === 0 && !this.showCreateTodo && !this.showSpinner
+        this.showLoader ||
+        (this.$store.state.isSearching && !this.showEmptyState)
       )
     },
 
     disableFilterButton: function () {
-      return this.allTodos.length === 0
-    },
-
-    showSpinner: function () {
       return this.allTodos.length === 0
     },
   },

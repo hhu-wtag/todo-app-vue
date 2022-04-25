@@ -22,6 +22,7 @@
 <script>
 import LogoIcon from "@/components/icons/LogoIcon"
 import SearchIcon from "@/components/icons/SearchIcon"
+import { SET_SEARCH_STATE } from "@/stores/mutation-types"
 import { debounce } from "@/utils/debounce"
 
 export default {
@@ -36,8 +37,13 @@ export default {
     }
   },
   watch: {
-    searchText: debounce(function () {
-      console.log(this.searchText)
+    searchText: debounce(async function () {
+      this.$store.commit(SET_SEARCH_STATE, { isSearching: true })
+      await this.$store.dispatch("getSearchData", {
+        searchText: this.searchText,
+      })
+
+      this.$store.commit(SET_SEARCH_STATE, { isSearching: false })
     }, 500),
   },
   methods: {

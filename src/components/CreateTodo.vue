@@ -43,7 +43,7 @@
 <script>
 import DeleteIcon from "@/components/icons/DeleteIcon"
 import { mapGetters } from "vuex"
-import SpinnerIcon from "./icons/SpinnerIcon.vue"
+import SpinnerIcon from "./icons/SpinnerIcon"
 
 export default {
   components: {
@@ -57,10 +57,12 @@ export default {
     },
     id: {
       type: String,
+      required: true,
     },
 
     todoItem: {
       type: Object,
+      required: true,
     },
   },
   data() {
@@ -81,8 +83,9 @@ export default {
   },
   mounted() {
     if (this.inDetailMode) {
-      this.title = this.todoItem.title
-      this.description = this.todoItem.desc
+      const { title, desc } = this.todoItem
+      this.title = title
+      this.description = desc
     }
   },
   methods: {
@@ -91,15 +94,19 @@ export default {
 
       this.showSpinner = true
 
-      await this.$store.dispatch("addTodoItem", {
-        title: this.title,
-        desc: this.description,
-      })
+      try {
+        await this.$store.dispatch("addTodoItem", {
+          title: this.title,
+          desc: this.description,
+        })
+      } catch (error) {
+        throw new Error(error)
+      } finally {
+        this.showSpinner = false
 
-      this.showSpinner = false
-
-      this.$emit("add")
-      this.onCancel()
+        this.$emit("add")
+        this.onCancel()
+      }
     },
     onUpdate() {
       if (!this.isValidate()) return

@@ -82,10 +82,16 @@ export default {
     async onDone() {
       this.isEditing = false
       this.showSpinner = true
-      await this.$store.dispatch("setTodoDone", { id: this.todo.id })
-      this.showSpinner = false
-      if (this.inDetailMode) {
-        this.$router.replace("/")
+
+      try {
+        await this.$store.dispatch("setTodoDone", { id: this.todo.id })
+      } catch (error) {
+        throw new Error(error)
+      } finally {
+        this.showSpinner = false
+        if (this.inDetailMode) {
+          this.$router.replace("/")
+        }
       }
     },
     onDelete() {
@@ -101,13 +107,19 @@ export default {
     },
     async onEditUpdate(title, desc) {
       this.showSpinner = true
-      await this.$store.dispatch("setTodoUpdate", {
-        id: this.todo.id,
-        editedTitle: title,
-        editedDesc: desc,
-      })
-      this.showSpinner = false
-      this.isEditing = false
+
+      try {
+        await this.$store.dispatch("setTodoUpdate", {
+          id: this.todo.id,
+          editedTitle: title,
+          editedDesc: desc,
+        })
+      } catch (error) {
+        throw new Error(error)
+      } finally {
+        this.showSpinner = false
+        this.isEditing = false
+      }
     },
   },
 }

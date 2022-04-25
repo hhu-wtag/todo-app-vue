@@ -51,7 +51,7 @@ export default {
       return !this.noItem && this.todoItem !== null
     },
   },
-  created() {
+  mounted() {
     this.fetchTodo()
   },
   methods: {

@@ -12,8 +12,16 @@
         v-model="searchText"
       />
 
-      <div class="navBar__searchBar_logo btn" @click="toggleSearchBar">
+      <div
+        v-if="!inDetailPage"
+        class="navBar__searchBar_logo btn"
+        @click="toggleSearchBar"
+      >
         <SearchIcon />
+      </div>
+
+      <div v-else>
+        <router-link to="/"><GoBackIcon /></router-link>
       </div>
     </div>
   </nav>
@@ -24,18 +32,28 @@ import LogoIcon from "@/components/icons/LogoIcon"
 import SearchIcon from "@/components/icons/SearchIcon"
 import { SET_SEARCH_STATE } from "@/stores/mutation-types"
 import { debounce } from "@/utils/debounce"
+import GoBackIcon from "./icons/GoBackIcon"
 
 export default {
   components: {
     LogoIcon,
     SearchIcon,
+    GoBackIcon,
   },
   data() {
     return {
       isSearchBarOpen: false,
       searchText: null,
+      inDetailPage: false,
     }
   },
+
+  created() {
+    if (this.$router.history.current.name === "details") {
+      this.inDetailPage = true
+    }
+  },
+
   watch: {
     searchText: debounce(async function () {
       this.$store.commit(SET_SEARCH_STATE, { isSearching: true })
@@ -45,6 +63,14 @@ export default {
 
       this.$store.commit(SET_SEARCH_STATE, { isSearching: false })
     }, 500),
+
+    $route: function (to) {
+      if (to.name === "details") {
+        this.inDetailPage = true
+      } else {
+        this.inDetailPage = false
+      }
+    },
   },
   methods: {
     toggleSearchBar() {

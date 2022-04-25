@@ -87,7 +87,7 @@ import TodoItem from "../components/TodoItem"
 import CreateTodo from "../components/CreateTodo"
 import ModalDialogue from "@/components/ModalDialogue"
 import EmptyStateIcon from "../components/icons/EmptyStateIcon"
-import SpinnerIcon from "@/components/icons/SpinnerIcon.vue"
+import SpinnerIcon from "@/components/icons/SpinnerIcon"
 
 export default {
   components: {

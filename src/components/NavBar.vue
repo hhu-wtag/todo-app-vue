@@ -9,9 +9,10 @@
         type="text"
         v-if="isSearchBarOpen"
         class="navBar__searchBar_input"
+        v-model="searchText"
       />
 
-      <div class="navBar__searchBar_logo btn" @click="onSearch">
+      <div class="navBar__searchBar_logo btn" @click="toggleSearchBar">
         <SearchIcon />
       </div>
     </div>
@@ -21,6 +22,7 @@
 <script>
 import LogoIcon from "@/components/icons/LogoIcon"
 import SearchIcon from "@/components/icons/SearchIcon"
+import { debounce } from "@/utils/debounce"
 
 export default {
   components: {
@@ -30,11 +32,16 @@ export default {
   data() {
     return {
       isSearchBarOpen: false,
+      searchText: null,
     }
   },
-
+  watch: {
+    searchText: debounce(function () {
+      console.log(this.searchText)
+    }, 500),
+  },
   methods: {
-    onSearch() {
+    toggleSearchBar() {
       this.isSearchBarOpen = !this.isSearchBarOpen
     },
   },

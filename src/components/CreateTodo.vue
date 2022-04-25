@@ -1,5 +1,6 @@
 <template>
-  <div class="createTodo card">
+  <div class="createTodo card" :class="{ disabled: showSpinner }">
+    <SpinnerIcon v-if="showSpinner" />
     <div class="createTodo__inputBox">
       <label for="createTodo__inputBox_titleLabel">Title</label>
       <input
@@ -42,10 +43,12 @@
 <script>
 import DeleteIcon from "@/components/icons/DeleteIcon"
 import { mapGetters } from "vuex"
+import SpinnerIcon from "./icons/SpinnerIcon.vue"
 
 export default {
   components: {
     DeleteIcon,
+    SpinnerIcon,
   },
   props: {
     inDetailMode: {
@@ -66,6 +69,7 @@ export default {
       description: null,
       isTitleError: false,
       isDescError: false,
+      showSpinner: false,
     }
   },
   computed: {
@@ -82,13 +86,17 @@ export default {
     }
   },
   methods: {
-    onAdd() {
+    async onAdd() {
       if (!this.isValidate()) return
 
-      this.$store.dispatch("addTodoItem", {
+      this.showSpinner = true
+
+      await this.$store.dispatch("addTodoItem", {
         title: this.title,
         desc: this.description,
       })
+
+      this.showSpinner = false
 
       this.$emit("add")
       this.onCancel()
@@ -120,6 +128,10 @@ export default {
 </script>
 
 <style lang="scss">
+.createTodo {
+  position: relative;
+}
+
 .createTodo__inputBox_descInput {
   resize: none;
   height: 5rem;

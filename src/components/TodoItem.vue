@@ -1,5 +1,5 @@
 <template>
-  <div class="todo">
+  <div class="todo" :class="{ disabled: showSpinner }">
     <SpinnerIcon v-if="showSpinner" />
 
     <div class="todo__header">
@@ -100,11 +100,13 @@ export default {
       this.editText = null
     },
     async onEditUpdate(title, desc) {
+      this.showSpinner = true
       await this.$store.dispatch("setTodoUpdate", {
         id: this.todo.id,
         editedTitle: title,
         editedDesc: desc,
       })
+      this.showSpinner = false
       this.isEditing = false
     },
   },

@@ -8,7 +8,7 @@ class Supabase {
 
     this.connection = createClient(
       process.env.VUE_APP_SUPABASE_URL,
-      process.env.VUE_APP_SUPABASE_ANON_KEY
+      process.env.VUE_APP_SUPABASE_KEY
     )
 
     Supabase.instance = this

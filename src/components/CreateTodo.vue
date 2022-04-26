@@ -57,12 +57,12 @@ export default {
     },
     id: {
       type: String,
-      required: true,
+      default: null,
     },
 
     todoItem: {
       type: Object,
-      required: true,
+      default: null,
     },
   },
   data() {

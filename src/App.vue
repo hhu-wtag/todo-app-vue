@@ -22,6 +22,6 @@ export default {
 .todo__container {
   color: $text-primary;
   background: $bg-primary;
-  height: 100%;
+  height: 100vh;
 }
 </style>

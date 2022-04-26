@@ -120,3 +120,11 @@ li {
     opacity: 1;
   }
 }
+
+.actionButton:hover + .tooltip {
+  opacity: 1;
+}
+
+.relative {
+  position: relative;
+}

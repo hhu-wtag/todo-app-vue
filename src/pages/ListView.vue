@@ -188,6 +188,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  background-color: $bg-primary;
 }
 
 .todoApp__main {
@@ -261,6 +262,7 @@ export default {
 .todoApp__footer {
   display: flex;
   justify-content: center;
+  background-color: $bg-primary;
   width: 100%;
 
   &_loadMore {

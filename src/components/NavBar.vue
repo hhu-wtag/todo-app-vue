@@ -21,7 +21,9 @@
       </div>
 
       <div v-else>
-        <router-link to="/"><GoBackIcon /></router-link>
+        <div class="detail__goback">
+          <router-link to="/">Go Back</router-link>
+        </div>
       </div>
     </div>
   </nav>
@@ -32,13 +34,11 @@ import LogoIcon from "@/components/icons/LogoIcon"
 import SearchIcon from "@/components/icons/SearchIcon"
 import { SET_SEARCH_STATE } from "@/stores/mutation-types"
 import { debounce } from "@/utils/debounce"
-import GoBackIcon from "./icons/GoBackIcon"
 
 export default {
   components: {
     LogoIcon,
     SearchIcon,
-    GoBackIcon,
   },
   data() {
     return {
@@ -114,6 +114,23 @@ export default {
     display: inline-flex;
     align-items: center;
     margin-left: 18px;
+  }
+}
+
+.detail__goback {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+
+  & > a {
+    background: $text-primary;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+  }
+  & > a:hover {
+    background: #232323;
   }
 }
 </style>

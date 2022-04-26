@@ -2,7 +2,7 @@
   <div class="modal__container">
     <div class="modal__overlay"></div>
     <div class="modal__main">
-      <p>Are You Sure?</p>
+      <p class="modal__main-text2xl">Are You Sure?</p>
 
       <div class="modal__main_button">
         <button class="modal__main_button-primary btn" @click="onConfirm">
@@ -50,10 +50,15 @@ export default {
 .modal__main {
   position: absolute;
   top: 2rem;
+  text-align: center;
   border: 1px solid $border-primary;
   border-radius: 5px;
   padding: 2rem 4rem;
   background: $bg-secondary;
+
+  &-text2xl {
+    font-size: 1.5rem;
+  }
 }
 
 .modal__main_button {

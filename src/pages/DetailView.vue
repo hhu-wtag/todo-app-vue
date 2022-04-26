@@ -14,10 +14,6 @@
       class="card detailedView"
       @delete="onTodoDelete"
     />
-
-    <div class="detail__goback">
-      <router-link to="/">Go Back</router-link>
-    </div>
   </div>
 </template>
 
@@ -85,22 +81,5 @@ export default {
   height: 80vh;
   padding: 5rem 10rem;
   align-items: center;
-}
-
-.detail__goback {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-
-  & > a {
-    background: $text-primary;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-  }
-  & > a:hover {
-    background: #232323;
-  }
 }
 </style>

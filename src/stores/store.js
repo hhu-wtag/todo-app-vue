@@ -11,6 +11,7 @@ import {
   RESET_TODOS,
   SET_SEARCH_DATA,
   SET_SEARCH_STATE,
+  SET_FILTER,
 } from "./mutation-types.js"
 import supabase from "@/utils/supabase"
 
@@ -20,29 +21,31 @@ export default new Vuex.Store({
   state: function () {
     return {
       todos: [],
-      limit: 4,
+      limit: 8,
+      currentFilter: "all",
       isSearching: false,
+      allTodoLen: 0,
+      incTodoLen: 0,
+      comTodoLen: 0,
     }
   },
 
   getters: {
     getTodos(state) {
-      return state.todos.slice(0, state.limit)
-    },
+      let option = state.currentFilter
 
-    getTodo: (state) => (id) => {
-      const index = state.todos.findIndex((todo) => todo.id === parseInt(id))
+      if (option === "all") {
+        state.allTodoLen = state.todos.length
+        return state.todos.slice(0, state.limit)
+      } else if (option === "com") {
+        let filteredList = state.todos.filter((todo) => todo.done)
 
-      if (index === -1) {
-        return {
-          status: "not-found",
-          todo: null,
-        }
+        state.comTodoLen = filteredList.length
+        return filteredList.slice(0, state.limit)
       } else {
-        return {
-          status: "ok",
-          todo: state.todos[index],
-        }
+        let filteredList = state.todos.filter((todo) => !todo.done)
+        state.incTodoLen = filteredList.length
+        return filteredList.slice(0, state.limit)
       }
     },
 
@@ -57,7 +60,13 @@ export default new Vuex.Store({
       },
 
     activeLoadMore: (state) => {
-      return state.todos.length > state.limit
+      if (state.currentFilter === "all") {
+        return state.allTodoLen > state.limit
+      } else if (state.currentFilter === "inc") {
+        return state.incTodoLen > state.limit
+      } else {
+        return state.comTodoLen > state.limit
+      }
     },
   },
 
@@ -107,7 +116,7 @@ export default new Vuex.Store({
     },
 
     [RESET_LIMIT](state) {
-      state.limit = 4
+      state.limit = 8
     },
 
     [SET_SEARCH_DATA](state, payload) {
@@ -116,6 +125,10 @@ export default new Vuex.Store({
 
     [SET_SEARCH_STATE](state, payload) {
       state.isSearching = payload.isSearching
+    },
+
+    [SET_FILTER](state, payload) {
+      state.currentFilter = payload.filter
     },
   },
 

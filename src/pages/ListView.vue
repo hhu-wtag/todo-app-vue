@@ -88,6 +88,7 @@ import CreateTodo from "../components/CreateTodo"
 import ModalDialogue from "@/components/ModalDialogue"
 import EmptyStateIcon from "../components/icons/EmptyStateIcon"
 import SpinnerIcon from "@/components/icons/SpinnerIcon"
+import { SET_FILTER, RESET_LIMIT } from "@/stores/mutation-types"
 
 export default {
   components: {
@@ -162,15 +163,25 @@ export default {
     },
     onAll() {
       this.activeFilter = "all"
-      this.todos = [...this.$store.getters.getFilterTodos("all")]
+      this.$store.commit(RESET_LIMIT)
+      this.$store.commit(SET_FILTER, {
+        filter: "all",
+      })
+      // this.todos = [...this.$store.getters.getFilterTodos("all")]
     },
     onComplete() {
       this.activeFilter = "com"
-      this.todos = [...this.$store.getters.getFilterTodos("com")]
+      this.$store.commit(SET_FILTER, {
+        filter: "com",
+      })
+      // this.todos = [...this.$store.getters.getFilterTodos("com")]
     },
     onInComplete() {
       this.activeFilter = "inc"
-      this.todos = [...this.$store.getters.getFilterTodos("inc")]
+      this.$store.commit(SET_FILTER, {
+        filter: "inc",
+      })
+      // this.todos = [...this.$store.getters.getFilterTodos("inc")]
     },
     renderAll() {
       this.activeFilter = "all"

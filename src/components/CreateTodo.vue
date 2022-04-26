@@ -8,25 +8,35 @@
         class="createTodo__inputBox_titleInput"
         v-model.trim="title"
       />
-      <span v-show="isTitleError">Title is required.</span>
+      <span v-show="isTitleError" class="createTodo__inputBox_error"
+        >Title is required.</span
+      >
 
       <label for="createTodo__inputBox_descLabel">Description</label>
       <textarea
         class="createTodo__inputBox_descInput"
         v-model.trim="description"
       />
-      <span v-show="isDescError">Description is required.</span>
+      <span v-show="isDescError" class="createTodo__Desc_error"
+        >Description is required.</span
+      >
     </div>
 
     <div class="createTodo__button">
       <button
         v-if="!inDetailMode"
         class="createTodo__button_add btn"
+        id="createTodo__add"
         @click="onAdd"
       >
         Add
       </button>
-      <button v-else class="createTodo__button_add btn" @click="onUpdate">
+      <button
+        id="createTodo__update"
+        v-else
+        class="createTodo__button_add btn"
+        @click="onUpdate"
+      >
         Update
       </button>
       <div

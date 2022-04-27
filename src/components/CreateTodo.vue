@@ -124,7 +124,6 @@ export default {
       this.$emit("update", this.title, this.description)
     },
     onCancel() {
-      console.log("called")
       this.$emit("cancel")
     },
 

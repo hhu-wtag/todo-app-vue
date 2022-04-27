@@ -17,6 +17,8 @@ test("Show search bar when isSearchBarOpen is true", async () => {
         isSearchBarOpen: true,
       }
     },
+
+    stubs: ["router-link"],
   })
 
   const navSearchBar = wrapper.find(".navBar__searchBar")
@@ -67,6 +69,8 @@ test("Sets searchbar input text", async () => {
         searchText: null,
       }
     },
+
+    stubs: ["router-link"],
   })
 
   const searchText = "Some Todo"

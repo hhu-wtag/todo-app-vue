@@ -1,17 +1,17 @@
 <template>
   <div class="actionButtons">
-    <TodoButton v-if="showDoneButton" @click="onDone">
+    <TodoButton id="doneButton" v-if="showDoneButton" @click="onDone">
       <DoneIcon />
     </TodoButton>
-    <TodoButton @click="onDelete">
+    <TodoButton id="deleteButton" @click="onDelete">
       <DeleteIcon />
     </TodoButton>
 
-    <TodoButton v-if="showEditButton" @click="onEdit">
+    <TodoButton id="editButton" v-if="showEditButton" @click="onEdit">
       <EditIcon />
     </TodoButton>
 
-    <TodoButton v-if="showEditStateButton" @click="onCancel"
+    <TodoButton id="cancelButton" v-if="showEditStateButton" @click="onCancel"
       ><CancelIcon
     /></TodoButton>
   </div>
@@ -67,7 +67,6 @@ export default {
     onEdit() {
       this.$emit("edit", this.todo?.id)
     },
-
     onCancel() {
       this.$emit("cancel", this.todo?.id)
     },

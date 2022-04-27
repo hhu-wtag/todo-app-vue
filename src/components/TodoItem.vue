@@ -10,7 +10,9 @@
           </h1>
         </router-link>
 
-        <h1 v-else><span>Title: </span>{{ todo && todo.title }}</h1>
+        <h1 class="todo__header_title" v-else>
+          <span>Title: </span>{{ todo && todo.title }}
+        </h1>
 
         <p class="todo__header_desc" v-if="!inDetailMode">
           {{ todo.desc }}

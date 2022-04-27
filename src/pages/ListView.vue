@@ -10,6 +10,12 @@
       <SpinnerIcon v-if="showSpinner" class="spinner__listView" />
       <p class="todoApp__main_title">Add Tasks</p>
 
+      <div class="todoApp__toastList">
+        <transition-group name="list">
+          <ToastBar v-for="toast in toasts" :toast="toast" :key="toast.id" />
+        </transition-group>
+      </div>
+
       <div class="todoApp__header" :class="{ disabled: showSpinner }">
         <div class="todoApp__button">
           <button class="todoApp__button_createButton btn" @click="onCreate">
@@ -88,6 +94,7 @@ import CreateTodo from "../components/CreateTodo"
 import ModalDialogue from "@/components/ModalDialogue"
 import EmptyStateIcon from "../components/icons/EmptyStateIcon"
 import SpinnerIcon from "@/components/icons/SpinnerIcon"
+import ToastBar from "@/components/ToastBar"
 import { SET_FILTER, RESET_LIMIT } from "@/stores/mutation-types"
 
 export default {
@@ -97,6 +104,7 @@ export default {
     ModalDialogue,
     EmptyStateIcon,
     SpinnerIcon,
+    ToastBar,
   },
   data: function () {
     return {
@@ -114,6 +122,7 @@ export default {
     ...mapGetters({
       allTodos: "getTodos",
       activeLoadMore: "activeLoadMore",
+      toasts: "getToasts",
     }),
 
     showEmptyState: function () {
@@ -219,6 +228,16 @@ export default {
   }
 }
 
+.todoApp__toastList {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .spinner__listView {
   position: fixed;
   top: 40%;
@@ -283,5 +302,15 @@ export default {
     color: white;
     font-weight: bold;
   }
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>

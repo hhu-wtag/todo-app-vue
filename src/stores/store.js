@@ -12,6 +12,8 @@ import {
   SET_SEARCH_DATA,
   SET_SEARCH_STATE,
   SET_FILTER,
+  ADD_TOAST,
+  REMOVE_TOAST,
 } from "./mutation-types.js"
 import supabase from "@/utils/supabase"
 
@@ -27,6 +29,7 @@ export default new Vuex.Store({
       allTodoLen: 0,
       incTodoLen: 0,
       comTodoLen: 0,
+      toasts: [],
     }
   },
 
@@ -67,6 +70,10 @@ export default new Vuex.Store({
       } else {
         return state.comTodoLen > state.limit
       }
+    },
+
+    getToasts: (state) => {
+      return state.toasts
     },
   },
 
@@ -130,6 +137,20 @@ export default new Vuex.Store({
     [SET_FILTER](state, payload) {
       state.currentFilter = payload.filter
     },
+
+    [ADD_TOAST](state, { body, type, id }) {
+      state.toasts.push({
+        body,
+        type,
+        id,
+      })
+    },
+
+    [REMOVE_TOAST](state, { id }) {
+      let index = state.toasts.findIndex((toast) => toast.id === id)
+
+      state.toasts.splice(index, 1)
+    },
   },
 
   /* eslint-disable */
@@ -163,18 +184,29 @@ export default new Vuex.Store({
       }
     },
 
-    async addTodoItem({ dispatch }, { title, desc }) {
+    async addTodoItem({ dispatch, commit }, { title, desc }) {
       let response = null
       try {
         response = await supabase.from("Todo").insert([{ title, desc }])
 
         await dispatch("getAllTodo")
+        commit(ADD_TOAST, {
+          body: "Succesfully Added Todo.",
+          type: "success",
+          id: Date.now(),
+        })
       } catch (error) {
+        commit(ADD_TOAST, {
+          body: "Some Error Occured",
+          type: "error",
+          id: Date.now(),
+        })
+
         throw new Error(error)
       }
     },
 
-    async setTodoDone({ dispatch }, { id, completedInDay }) {
+    async setTodoDone({ dispatch, commit }, { id, completedInDay }) {
       try {
         const response = await supabase
           .from("Todo")
@@ -182,17 +214,39 @@ export default new Vuex.Store({
           .eq("id", id)
 
         dispatch("getAllTodo")
+
+        commit(ADD_TOAST, {
+          body: "Succesfully Update Todo.",
+          type: "success",
+          id: Date.now(),
+        })
       } catch (error) {
+        commit(ADD_TOAST, {
+          body: "Some Error Occured",
+          type: "error",
+          id: Date.now(),
+        })
         throw new Error(error)
       }
     },
 
-    async removeTodoItem({ dispatch }, { id }) {
+    async removeTodoItem({ dispatch, commit }, { id }) {
       try {
         const response = await supabase.from("Todo").delete().eq("id", id)
 
         dispatch("getAllTodo")
+
+        commit(ADD_TOAST, {
+          body: "Succesfully Removed Todo.",
+          type: "success",
+          id: Date.now(),
+        })
       } catch (error) {
+        commit(ADD_TOAST, {
+          body: "Some Error Occured",
+          type: "error",
+          id: Date.now(),
+        })
         throw new Error(error)
       }
     },

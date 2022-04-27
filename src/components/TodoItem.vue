@@ -12,6 +12,8 @@
 
         <h1 v-else><span>Title: </span>{{ todo && todo.title }}</h1>
 
+        <p class="todo__header_createdAt">Created at: {{ created_at }}</p>
+
         <p class="todo__header_desc" v-if="!inDetailMode">
           {{ todo.desc }}
         </p>
@@ -48,6 +50,7 @@
 import ActionButtons from "./ActionButtons"
 import CreateTodo from "./CreateTodo"
 import SpinnerIcon from "./icons/SpinnerIcon"
+import moment from "moment"
 
 export default {
   props: {
@@ -76,6 +79,10 @@ export default {
   computed: {
     isDone() {
       return this.todo?.done
+    },
+
+    created_at() {
+      return moment.utc(this.todo?.created_at).format("DD.MM.YY")
     },
   },
   methods: {
@@ -145,6 +152,12 @@ export default {
 
   &_desc {
     font-size: 14px;
+    color: $text-secondary;
+  }
+
+  &_createdAt {
+    font-size: 14px;
+    font-weight: bold;
     color: $text-secondary;
   }
 }

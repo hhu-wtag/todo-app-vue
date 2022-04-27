@@ -1,6 +1,12 @@
 import { shallowMount } from "@vue/test-utils"
 import CreateTodo from "@/components/CreateTodo.vue"
 
+let onCancelMock
+
+beforeAll(() => {
+  onCancelMock = jest.spyOn(CreateTodo.methods, "onCancel")
+})
+
 test("TitleInput is updating", async () => {
   const wrapper = shallowMount(CreateTodo, {
     data: function () {
@@ -156,9 +162,5 @@ test("onCancel event called", async () => {
 
   await wrapper.find(".createTodo__button_cancel").trigger("click")
 
-  expect(wrapper.vm.onCancel).toHaveBeenCalledWith({
-    event: {
-      target: {},
-    },
-  })
+  expect(onCancelMock).toHaveBeenCalled()
 })

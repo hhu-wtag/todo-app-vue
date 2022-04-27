@@ -42,6 +42,10 @@
         @edit="onEdit"
         @cancel="onCancel"
       />
+
+      <div v-if="isDone" class="todo__footer-completedIn">
+        Completed in {{ todo.doneIn }} {{ todo.doneIn === 0 ? "day" : "days" }}
+      </div>
     </div>
   </div>
 </template>
@@ -91,7 +95,19 @@ export default {
       this.showSpinner = true
 
       try {
-        await this.$store.dispatch("setTodoDone", { id: this.todo.id })
+        let created_at_unix = Math.floor(
+          new Date(this.todo.created_at).getTime() / 1000
+        )
+        let timeOfCompletion = Math.floor(new Date().getTime() / 1000)
+
+        let completedInDay = parseInt(
+          (timeOfCompletion - created_at_unix) / 86400
+        )
+
+        await this.$store.dispatch("setTodoDone", {
+          id: this.todo.id,
+          completedInDay,
+        })
       } catch (error) {
         throw new Error(error)
       } finally {
@@ -159,6 +175,20 @@ export default {
     font-size: 14px;
     font-weight: bold;
     color: $text-secondary;
+  }
+}
+
+.todo__footer {
+  display: flex;
+  justify-content: space-between;
+
+  &-completedIn {
+    background-color: $text-accent;
+    color: white;
+    padding: 2px 8px;
+    font-weight: bold;
+    border-radius: 5px;
+    font-size: 12px;
   }
 }
 

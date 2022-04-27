@@ -174,11 +174,11 @@ export default new Vuex.Store({
       }
     },
 
-    async setTodoDone({ dispatch }, { id }) {
+    async setTodoDone({ dispatch }, { id, completedInDay }) {
       try {
         const response = await supabase
           .from("Todo")
-          .update({ done: true })
+          .update({ done: true, doneIn: completedInDay })
           .eq("id", id)
 
         dispatch("getAllTodo")

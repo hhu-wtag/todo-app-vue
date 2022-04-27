@@ -48,7 +48,7 @@ export default {
 }
 
 .modal__main {
-  position: absolute;
+  position: fixed;
   top: 2rem;
   text-align: center;
   border: 1px solid $border-primary;

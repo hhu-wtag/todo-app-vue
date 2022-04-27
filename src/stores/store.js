@@ -2,9 +2,6 @@ import Vue from "vue"
 import Vuex from "vuex"
 import {
   ADD_TODO,
-  SET_DONE,
-  SET_UPDATE,
-  REMOVE_TODO,
   SET_LIMIT,
   SET_TODO,
   RESET_LIMIT,
@@ -37,18 +34,19 @@ export default new Vuex.Store({
     getTodos(state) {
       let option = state.currentFilter
 
+      let completedTodo = state.todos.filter((todo) => todo.done)
+      let inCompletedTodo = state.todos.filter((todo) => !todo.done)
+
+      state.allTodoLen = state.todos.length
+      state.comTodoLen = completedTodo.length
+      state.incTodoLen = inCompletedTodo.length
+
       if (option === "all") {
-        state.allTodoLen = state.todos.length
         return state.todos.slice(0, state.limit)
       } else if (option === "com") {
-        let filteredList = state.todos.filter((todo) => todo.done)
-
-        state.comTodoLen = filteredList.length
-        return filteredList.slice(0, state.limit)
+        return completedTodo.slice(0, state.limit)
       } else {
-        let filteredList = state.todos.filter((todo) => !todo.done)
-        state.incTodoLen = filteredList.length
-        return filteredList.slice(0, state.limit)
+        return inCompletedTodo.slice(0, state.limit)
       }
     },
 
@@ -84,29 +82,6 @@ export default new Vuex.Store({
         desc: payload.desc,
         id: Date.now(),
         done: false,
-      })
-    },
-
-    [SET_DONE](state, payload) {
-      let index = state.todos.findIndex((todo) => todo.id === payload.id)
-
-      Vue.set(state.todos, index, {
-        ...state.todos[index],
-        done: true,
-      })
-    },
-
-    [REMOVE_TODO](state, payload) {
-      state.todos = state.todos.filter((item) => item.id !== payload.id)
-    },
-
-    [SET_UPDATE](state, payload) {
-      let index = state.todos.findIndex((todo) => todo.id === payload.id)
-
-      Vue.set(state.todos, index, {
-        ...state.todos[index],
-        title: payload.editedTitle,
-        desc: payload.editedDesc,
       })
     },
 

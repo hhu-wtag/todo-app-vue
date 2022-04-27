@@ -137,7 +137,11 @@ export default {
     },
 
     disableFilterButton: function () {
-      return this.allTodos.length === 0
+      return (
+        this.$store.state.allTodoLen === 0 &&
+        this.$store.state.incTodoLen === 0 &&
+        this.$store.state.comTodoLen === 0
+      )
     },
   },
   created() {
@@ -232,6 +236,7 @@ export default {
   position: fixed;
   display: flex;
   flex-direction: column;
+  z-index: 999;
 
   top: 15%;
   left: 50%;

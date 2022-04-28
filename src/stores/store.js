@@ -2,9 +2,6 @@ import Vue from "vue"
 import Vuex from "vuex"
 import {
   ADD_TODO,
-  SET_DONE,
-  SET_UPDATE,
-  REMOVE_TODO,
   SET_LIMIT,
   SET_TODO,
   RESET_LIMIT,
@@ -12,8 +9,11 @@ import {
   SET_SEARCH_DATA,
   SET_SEARCH_STATE,
   SET_FILTER,
+  ADD_TOAST,
+  REMOVE_TOAST,
 } from "./mutation-types.js"
 import supabase from "@/utils/supabase"
+import { ALL, INCOMPLETE } from "@/utils/constants"
 
 Vue.use(Vuex)
 
@@ -22,84 +22,39 @@ export default new Vuex.Store({
     return {
       todos: [],
       limit: 8,
-      currentFilter: "all",
+      currentFilter: ALL,
       isSearching: false,
-      allTodoLen: 0,
-      incTodoLen: 0,
-      comTodoLen: 0,
+      toasts: [],
     }
   },
 
   getters: {
     getTodos(state) {
-      let option = state.currentFilter
-
-      if (option === "all") {
-        state.allTodoLen = state.todos.length
-        return state.todos.slice(0, state.limit)
-      } else if (option === "com") {
-        let filteredList = state.todos.filter((todo) => todo.done)
-
-        state.comTodoLen = filteredList.length
-        return filteredList.slice(0, state.limit)
-      } else {
-        let filteredList = state.todos.filter((todo) => !todo.done)
-        state.incTodoLen = filteredList.length
-        return filteredList.slice(0, state.limit)
-      }
+      return state.todos
     },
 
-    getFilterTodos:
-      (state) =>
-      (option = "all") => {
-        if (option === "all") return state.todos.slice(0, state.limit)
-        else if (option === "com")
-          return state.todos.filter((todo) => todo.done).slice(0, state.limit)
-        else
-          return state.todos.filter((todo) => !todo.done).slice(0, state.limit)
-      },
-
     activeLoadMore: (state) => {
-      if (state.currentFilter === "all") {
+      if (state.currentFilter === ALL) {
         return state.allTodoLen > state.limit
-      } else if (state.currentFilter === "inc") {
+      } else if (state.currentFilter === INCOMPLETE) {
         return state.incTodoLen > state.limit
       } else {
         return state.comTodoLen > state.limit
       }
     },
+
+    getToasts: (state) => {
+      return state.toasts
+    },
   },
 
   mutations: {
-    [ADD_TODO](state, payload) {
+    [ADD_TODO](state, { title, desc }) {
       state.todos.push({
-        title: payload.title,
-        desc: payload.desc,
+        title: title,
+        desc: desc,
         id: Date.now(),
         done: false,
-      })
-    },
-
-    [SET_DONE](state, payload) {
-      let index = state.todos.findIndex((todo) => todo.id === payload.id)
-
-      Vue.set(state.todos, index, {
-        ...state.todos[index],
-        done: true,
-      })
-    },
-
-    [REMOVE_TODO](state, payload) {
-      state.todos = state.todos.filter((item) => item.id !== payload.id)
-    },
-
-    [SET_UPDATE](state, payload) {
-      let index = state.todos.findIndex((todo) => todo.id === payload.id)
-
-      Vue.set(state.todos, index, {
-        ...state.todos[index],
-        title: payload.editedTitle,
-        desc: payload.editedDesc,
       })
     },
 
@@ -123,12 +78,26 @@ export default new Vuex.Store({
       state.todos = [...payload]
     },
 
-    [SET_SEARCH_STATE](state, payload) {
-      state.isSearching = payload.isSearching
+    [SET_SEARCH_STATE](state, { isSearching }) {
+      state.isSearching = isSearching
     },
 
-    [SET_FILTER](state, payload) {
-      state.currentFilter = payload.filter
+    [SET_FILTER](state, { filter }) {
+      state.currentFilter = filter
+    },
+
+    [ADD_TOAST](state, { body, type, id }) {
+      state.toasts.push({
+        body,
+        type,
+        id,
+      })
+    },
+
+    [REMOVE_TOAST](state, { id }) {
+      let index = state.toasts.findIndex((toast) => toast.id === id)
+
+      state.toasts.splice(index, 1)
     },
   },
 
@@ -163,36 +132,69 @@ export default new Vuex.Store({
       }
     },
 
-    async addTodoItem({ dispatch }, { title, desc }) {
+    async addTodoItem({ dispatch, commit }, { title, desc }) {
       let response = null
       try {
         response = await supabase.from("Todo").insert([{ title, desc }])
 
         await dispatch("getAllTodo")
+        commit(ADD_TOAST, {
+          body: "Succesfully Added Todo.",
+          type: "success",
+          id: Date.now(),
+        })
       } catch (error) {
+        commit(ADD_TOAST, {
+          body: "Some Error Occured",
+          type: "error",
+          id: Date.now(),
+        })
+
         throw new Error(error)
       }
     },
 
-    async setTodoDone({ dispatch }, { id }) {
+    async setTodoDone({ dispatch, commit }, { id, completedInDay }) {
       try {
         const response = await supabase
           .from("Todo")
-          .update({ done: true })
+          .update({ done: true, doneIn: completedInDay })
           .eq("id", id)
 
         dispatch("getAllTodo")
+
+        commit(ADD_TOAST, {
+          body: "Succesfully Update Todo.",
+          type: "success",
+          id: Date.now(),
+        })
       } catch (error) {
+        commit(ADD_TOAST, {
+          body: "Some Error Occured",
+          type: "error",
+          id: Date.now(),
+        })
         throw new Error(error)
       }
     },
 
-    async removeTodoItem({ dispatch }, { id }) {
+    async removeTodoItem({ dispatch, commit }, { id }) {
       try {
         const response = await supabase.from("Todo").delete().eq("id", id)
 
         dispatch("getAllTodo")
+
+        commit(ADD_TOAST, {
+          body: "Succesfully Removed Todo.",
+          type: "success",
+          id: Date.now(),
+        })
       } catch (error) {
+        commit(ADD_TOAST, {
+          body: "Some Error Occured",
+          type: "error",
+          id: Date.now(),
+        })
         throw new Error(error)
       }
     },

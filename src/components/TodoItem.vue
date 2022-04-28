@@ -10,9 +10,9 @@
           </h1>
         </router-link>
 
-        <h1 class="todo__header_title" v-else>
-          <span>Title: </span>{{ todo && todo.title }}
-        </h1>
+        <h1 v-else><span>Title: </span>{{ todoTitle }}</h1>
+
+        <p class="todo__header_createdAt">Created at: {{ created_at }}</p>
 
         <p class="todo__header_desc" v-if="!inDetailMode">
           {{ todo.desc }}
@@ -42,6 +42,10 @@
         @edit="onEdit"
         @cancel="onCancel"
       />
+
+      <div v-if="isDone" class="todo__footer-completedIn">
+        Completed in {{ doneInDays }}
+      </div>
     </div>
   </div>
 </template>
@@ -50,6 +54,7 @@
 import ActionButtons from "./ActionButtons"
 import CreateTodo from "./CreateTodo"
 import SpinnerIcon from "./icons/SpinnerIcon"
+import moment from "moment"
 
 export default {
   props: {
@@ -79,6 +84,15 @@ export default {
     isDone() {
       return this.todo?.done
     },
+    created_at() {
+      return moment.utc(this.todo?.created_at).format("DD.MM.YY")
+    },
+    todoTitle() {
+      return this.todo?.title
+    },
+    doneInDays() {
+      return `${this.todo?.doneIn} ${this.todo?.doneIn === 0 ? "day" : "days"}`
+    },
   },
   methods: {
     async onDone() {
@@ -86,7 +100,19 @@ export default {
       this.showSpinner = true
 
       try {
-        await this.$store.dispatch("setTodoDone", { id: this.todo.id })
+        const created_at_unix = Math.floor(
+          new Date(this.todo.created_at).getTime() / 1000
+        )
+        const timeOfCompletion = Math.floor(new Date().getTime() / 1000)
+
+        let completedInDay = parseInt(
+          (timeOfCompletion - created_at_unix) / 86400
+        )
+
+        await this.$store.dispatch("setTodoDone", {
+          id: this.todo.id,
+          completedInDay,
+        })
       } catch (error) {
         throw new Error(error)
       } finally {
@@ -148,6 +174,26 @@ export default {
   &_desc {
     font-size: 14px;
     color: $text-secondary;
+  }
+
+  &_createdAt {
+    font-size: 14px;
+    font-weight: bold;
+    color: $text-secondary;
+  }
+}
+
+.todo__footer {
+  display: flex;
+  justify-content: space-between;
+
+  &-completedIn {
+    background-color: $text-accent;
+    color: white;
+    padding: 2px 8px;
+    font-weight: bold;
+    border-radius: 5px;
+    font-size: 12px;
   }
 }
 

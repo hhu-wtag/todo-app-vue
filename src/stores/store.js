@@ -13,7 +13,7 @@ import {
   REMOVE_TOAST,
 } from "./mutation-types.js"
 import supabase from "@/utils/supabase"
-import { ALL, INCOMPLETE, COMPLETE } from "@/utils/constants"
+import { ALL, INCOMPLETE } from "@/utils/constants"
 
 Vue.use(Vuex)
 
@@ -32,16 +32,6 @@ export default new Vuex.Store({
     getTodos(state) {
       return state.todos
     },
-
-    getFilterTodos:
-      (state) =>
-      (option = ALL) => {
-        if (option === ALL) return state.todos.slice(0, state.limit)
-        else if (option === COMPLETE)
-          return state.todos.filter((todo) => todo.done).slice(0, state.limit)
-        else
-          return state.todos.filter((todo) => !todo.done).slice(0, state.limit)
-      },
 
     activeLoadMore: (state) => {
       if (state.currentFilter === ALL) {

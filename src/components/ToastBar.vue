@@ -1,6 +1,6 @@
 <template>
-  <div class="toast__container" :class="{ error: toast.type === 'error' }">
-    <p>{{ toast && toast.body }}</p>
+  <div class="toast__container" :class="showToastError && 'error'">
+    <p>{{ toastBody }}</p>
   </div>
 </template>
 
@@ -19,6 +19,16 @@ export default {
     return {
       timeoutID: null,
     }
+  },
+
+  computed: {
+    showToastError() {
+      return this.toast.type === "error"
+    },
+
+    toastBody() {
+      return this.toast.body
+    },
   },
 
   mounted() {

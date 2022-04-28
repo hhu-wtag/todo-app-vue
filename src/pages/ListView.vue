@@ -96,6 +96,7 @@ import EmptyStateIcon from "../components/icons/EmptyStateIcon"
 import SpinnerIcon from "@/components/icons/SpinnerIcon"
 import ToastBar from "@/components/ToastBar"
 import { SET_FILTER, RESET_LIMIT } from "@/stores/mutation-types"
+import { ALL, INCOMPLETE, COMPLETE } from "@/utils/constants"
 
 export default {
   components: {
@@ -114,14 +115,15 @@ export default {
       showCreateTodo: false,
       showModal: false,
       todoItemToBeDeleted: null,
-      activeFilter: "all",
       showLoader: false,
+      allTodoLen: 0,
+      comTodoLen: 0,
+      incTodoLen: 0,
     }
   },
   computed: {
     ...mapGetters({
       allTodos: "getTodos",
-      activeLoadMore: "activeLoadMore",
       toasts: "getToasts",
     }),
 
@@ -138,21 +140,61 @@ export default {
 
     disableFilterButton: function () {
       return (
-        this.$store.state.allTodoLen === 0 &&
-        this.$store.state.incTodoLen === 0 &&
-        this.$store.state.comTodoLen === 0
+        this.allTodoLen === 0 && this.incTodoLen === 0 && this.comTodoLen === 0
       )
+    },
+
+    activeFilter: function () {
+      return this.$store.state.currentFilter
+    },
+
+    activeLoadMore: function () {
+      let { currentFilter, limit } = this.$store.state
+
+      if (currentFilter === ALL) {
+        return this.allTodoLen > limit
+      } else if (currentFilter === INCOMPLETE) {
+        return this.incTodoLen > limit
+      } else {
+        return this.comTodoLen > limit
+      }
     },
   },
   created() {
-    this.todos = [...this.allTodos]
+    this.todos = [...this.fetchAndFilter()]
   },
   watch: {
     allTodos: function () {
-      this.todos = [...this.allTodos]
+      this.todos = [...this.fetchAndFilter()]
+    },
+
+    activeFilter: function () {
+      this.todos = [...this.fetchAndFilter()]
     },
   },
   methods: {
+    fetchAndFilter() {
+      let { currentFilter, limit } = this.$store.state
+
+      let response = [...this.allTodos]
+
+      let incFilteredTodos = response.filter((todo) => !todo.done)
+      let comFilteredTodos = response.filter((todo) => todo.done)
+
+      this.allTodoLen = response.length
+      this.incTodoLen = incFilteredTodos.length
+      this.comTodoLen = comFilteredTodos.length
+
+      if (currentFilter === ALL) {
+        return response.slice(0, limit)
+      } else if (currentFilter === COMPLETE) {
+        response = comFilteredTodos
+      } else {
+        response = incFilteredTodos
+      }
+
+      return response.slice(0, limit)
+    },
     onDelete() {
       this.showModal = false
 
@@ -175,33 +217,33 @@ export default {
       this.todoItemToBeDeleted = null
     },
     onAll() {
-      this.activeFilter = "all"
       this.$store.commit(RESET_LIMIT)
       this.$store.commit(SET_FILTER, {
-        filter: "all",
+        filter: ALL,
       })
-      // this.todos = [...this.$store.getters.getFilterTodos("all")]
+
+      this.fetchAndFilter()
     },
     onComplete() {
-      this.activeFilter = "com"
       this.$store.commit(SET_FILTER, {
-        filter: "com",
+        filter: COMPLETE,
       })
-      // this.todos = [...this.$store.getters.getFilterTodos("com")]
+
+      this.fetchAndFilter()
     },
     onInComplete() {
-      this.activeFilter = "inc"
       this.$store.commit(SET_FILTER, {
-        filter: "inc",
+        filter: INCOMPLETE,
       })
-      // this.todos = [...this.$store.getters.getFilterTodos("inc")]
+
+      this.fetchAndFilter()
     },
     renderAll() {
-      this.activeFilter = "all"
       this.todos = this.allTodos
     },
     onLoadMore() {
       this.$store.dispatch("setTodoLimit")
+      this.todos = [...this.fetchAndFilter()]
     },
   },
 }

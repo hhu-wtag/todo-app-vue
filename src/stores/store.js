@@ -13,6 +13,7 @@ import {
   REMOVE_TOAST,
 } from "./mutation-types.js"
 import supabase from "@/utils/supabase"
+import { ALL, INCOMPLETE, COMPLETE } from "@/utils/constants"
 
 Vue.use(Vuex)
 
@@ -21,49 +22,31 @@ export default new Vuex.Store({
     return {
       todos: [],
       limit: 8,
-      currentFilter: "all",
+      currentFilter: ALL,
       isSearching: false,
-      allTodoLen: 0,
-      incTodoLen: 0,
-      comTodoLen: 0,
       toasts: [],
     }
   },
 
   getters: {
     getTodos(state) {
-      let option = state.currentFilter
-
-      let completedTodo = state.todos.filter((todo) => todo.done)
-      let inCompletedTodo = state.todos.filter((todo) => !todo.done)
-
-      state.allTodoLen = state.todos.length
-      state.comTodoLen = completedTodo.length
-      state.incTodoLen = inCompletedTodo.length
-
-      if (option === "all") {
-        return state.todos.slice(0, state.limit)
-      } else if (option === "com") {
-        return completedTodo.slice(0, state.limit)
-      } else {
-        return inCompletedTodo.slice(0, state.limit)
-      }
+      return state.todos
     },
 
     getFilterTodos:
       (state) =>
-      (option = "all") => {
-        if (option === "all") return state.todos.slice(0, state.limit)
-        else if (option === "com")
+      (option = ALL) => {
+        if (option === ALL) return state.todos.slice(0, state.limit)
+        else if (option === COMPLETE)
           return state.todos.filter((todo) => todo.done).slice(0, state.limit)
         else
           return state.todos.filter((todo) => !todo.done).slice(0, state.limit)
       },
 
     activeLoadMore: (state) => {
-      if (state.currentFilter === "all") {
+      if (state.currentFilter === ALL) {
         return state.allTodoLen > state.limit
-      } else if (state.currentFilter === "inc") {
+      } else if (state.currentFilter === INCOMPLETE) {
         return state.incTodoLen > state.limit
       } else {
         return state.comTodoLen > state.limit
@@ -76,10 +59,10 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    [ADD_TODO](state, payload) {
+    [ADD_TODO](state, { title, desc }) {
       state.todos.push({
-        title: payload.title,
-        desc: payload.desc,
+        title: title,
+        desc: desc,
         id: Date.now(),
         done: false,
       })
@@ -105,12 +88,12 @@ export default new Vuex.Store({
       state.todos = [...payload]
     },
 
-    [SET_SEARCH_STATE](state, payload) {
-      state.isSearching = payload.isSearching
+    [SET_SEARCH_STATE](state, { isSearching }) {
+      state.isSearching = isSearching
     },
 
-    [SET_FILTER](state, payload) {
-      state.currentFilter = payload.filter
+    [SET_FILTER](state, { filter }) {
+      state.currentFilter = filter
     },
 
     [ADD_TOAST](state, { body, type, id }) {

@@ -10,7 +10,7 @@
           </h1>
         </router-link>
 
-        <h1 v-else><span>Title: </span>{{ todo && todo.title }}</h1>
+        <h1 v-else><span>Title: </span>{{ todoTitle }}</h1>
 
         <p class="todo__header_createdAt">Created at: {{ created_at }}</p>
 
@@ -44,7 +44,7 @@
       />
 
       <div v-if="isDone" class="todo__footer-completedIn">
-        Completed in {{ todo.doneIn }} {{ todo.doneIn === 0 ? "day" : "days" }}
+        Completed in {{ doneInDays }}
       </div>
     </div>
   </div>
@@ -84,9 +84,14 @@ export default {
     isDone() {
       return this.todo?.done
     },
-
     created_at() {
       return moment.utc(this.todo?.created_at).format("DD.MM.YY")
+    },
+    todoTitle() {
+      return this.todo?.title
+    },
+    doneInDays() {
+      return `${this.todo?.doneIn} ${this.todo?.doneIn === 0 ? "day" : "days"}`
     },
   },
   methods: {
@@ -95,10 +100,10 @@ export default {
       this.showSpinner = true
 
       try {
-        let created_at_unix = Math.floor(
+        const created_at_unix = Math.floor(
           new Date(this.todo.created_at).getTime() / 1000
         )
-        let timeOfCompletion = Math.floor(new Date().getTime() / 1000)
+        const timeOfCompletion = Math.floor(new Date().getTime() / 1000)
 
         let completedInDay = parseInt(
           (timeOfCompletion - created_at_unix) / 86400

@@ -6,6 +6,7 @@
     </div>
     <div class="navBar__searchBar">
       <input
+        v-show="!inDetailPage"
         type="text"
         v-if="isSearchBarOpen"
         class="navBar__searchBar_input"

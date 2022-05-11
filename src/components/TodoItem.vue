@@ -2,7 +2,7 @@
   <div class="todo" :class="{ disabled: showSpinner }">
     <SpinnerIcon v-if="showSpinner" />
 
-    <div class="todo__header">
+    <div class="todo__header" :class="inDetailMode && 'todo__header-detail'">
       <div v-if="!isEditing" :class="detailPageStyle">
         <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
           <h1 class="todo__header_title" :class="{ done: isDone }">
@@ -10,7 +10,15 @@
           </h1>
         </router-link>
 
-        <h1 v-else><span>Title: </span>{{ todoTitle }}</h1>
+        <div class="todo__header_title-detail" v-else>
+          <h1>
+            <span>Title: </span>
+            {{ todoTitle }}
+          </h1>
+          <span v-if="isDone" class="todoCompleteLabel ml-4"
+            >Todo Completed</span
+          >
+        </div>
 
         <p class="todo__header_createdAt" :class="inDetailMode && 'text-base'">
           Created at: {{ created_at }}
@@ -193,6 +201,11 @@ export default {
 
   &_title {
     font-size: 24px;
+
+    &-detail {
+      display: flex;
+      align-items: center;
+    }
   }
 
   &_desc {
@@ -208,6 +221,10 @@ export default {
     font-size: 14px;
     font-weight: bold;
     color: $text-secondary;
+  }
+
+  &-detail {
+    width: 70%;
   }
 }
 
@@ -239,6 +256,15 @@ export default {
 
 .detailMode > * + * {
   margin-top: 1rem;
+}
+
+.todoCompleteLabel {
+  font-size: 14px;
+  background-color: $text-success;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 5px;
+  height: fit-content;
 }
 
 .text-base {

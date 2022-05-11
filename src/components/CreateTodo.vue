@@ -1,7 +1,10 @@
 <template>
   <div class="createTodo card" :class="{ disabled: showSpinner }">
     <SpinnerIcon v-if="showSpinner" />
-    <div class="createTodo__inputBox">
+    <div
+      class="createTodo__inputBox"
+      :class="inDetailMode && 'createTodo__inputBox-detail'"
+    >
       <label for="createTodo__inputBox_titleLabel">Title</label>
       <input
         type="text"
@@ -13,6 +16,7 @@
       <label for="createTodo__inputBox_descLabel">Description</label>
       <textarea
         class="createTodo__inputBox_descInput"
+        :class="inDetailMode && 'createTodo__inputBox_descInput-detail'"
         v-model.trim="description"
       />
       <span v-show="isDescError">Description is required.</span>
@@ -44,6 +48,7 @@
 import DeleteIcon from "@/components/icons/DeleteIcon"
 import { mapGetters } from "vuex"
 import SpinnerIcon from "./icons/SpinnerIcon"
+import sanitizeHtml from "sanitize-html"
 
 export default {
   components: {
@@ -90,6 +95,9 @@ export default {
   },
   methods: {
     async onAdd() {
+      this.title = sanitizeHtml(this.title)
+      this.description = sanitizeHtml(this.description)
+
       if (!this.isValidate()) return
 
       this.showSpinner = true
@@ -142,6 +150,10 @@ export default {
 .createTodo__inputBox_descInput {
   resize: none;
   height: 5rem;
+
+  &-detail {
+    height: 12rem;
+  }
 }
 
 .createTodo__inputBox {
@@ -153,6 +165,12 @@ export default {
     margin-bottom: 12px;
     border: 3px solid $border-primary;
     border-radius: 5px;
+    padding-left: 0.5rem;
+  }
+
+  &-detail {
+    width: 100%;
+    padding: 2rem 4rem;
   }
 }
 

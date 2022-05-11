@@ -3,23 +3,25 @@
     <SpinnerIcon v-if="showSpinner" />
 
     <div class="todo__header">
-      <div v-if="!isEditing">
+      <div v-if="!isEditing" :class="detailPageStyle">
         <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
           <h1 class="todo__header_title" :class="{ done: isDone }">
-            {{ todo.title }}
+            {{ todoTitle }}
           </h1>
         </router-link>
 
         <h1 v-else><span>Title: </span>{{ todoTitle }}</h1>
 
-        <p class="todo__header_createdAt">Created at: {{ created_at }}</p>
-
-        <p class="todo__header_desc" v-if="!inDetailMode">
-          {{ todo.desc }}
+        <p class="todo__header_createdAt" :class="inDetailMode && 'text-base'">
+          Created at: {{ created_at }}
         </p>
 
-        <p class="todo__header_desc" v-else>
-          <span>Description: </span>{{ todo && todo.desc }}
+        <p class="todo__header_desc" v-if="!inDetailMode">
+          {{ todoDescription }}
+        </p>
+
+        <p class="todo__header_desc-detail" v-else>
+          {{ todoDescription }}
         </p>
       </div>
       <CreateTodo
@@ -43,7 +45,11 @@
         @cancel="onCancel"
       />
 
-      <div v-if="isDone" class="todo__footer-completedIn">
+      <div
+        v-if="isDone"
+        class="todo__footer-completedIn"
+        :class="inDetailMode && 'ml-4'"
+      >
         Completed in {{ doneInDays }}
       </div>
     </div>
@@ -87,11 +93,29 @@ export default {
     created_at() {
       return moment.utc(this.todo?.created_at).format("DD.MM.YY")
     },
+    doneInDays() {
+      return `${this.todo?.doneIn} ${this.todo?.doneIn === 0 ? "day" : "days"}`
+    },
+
     todoTitle() {
       return this.todo?.title
     },
-    doneInDays() {
-      return `${this.todo?.doneIn} ${this.todo?.doneIn === 0 ? "day" : "days"}`
+
+    todoDescription() {
+      if (!this.inDetailMode) {
+        return (
+          this.todo?.desc.slice(0, 55) +
+          (this.todo?.desc.length > 55 ? "..." : "")
+        )
+      } else {
+        return this.todo?.desc
+      }
+    },
+
+    detailPageStyle() {
+      return {
+        detailMode: this.inDetailMode,
+      }
     },
   },
   methods: {
@@ -174,6 +198,10 @@ export default {
   &_desc {
     font-size: 14px;
     color: $text-secondary;
+
+    &-detail {
+      font-size: 1.5rem;
+    }
   }
 
   &_createdAt {
@@ -200,5 +228,24 @@ export default {
 .createTodo__detailed {
   width: 100% !important;
   align-items: center;
+}
+
+.detailMode {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.detailMode > * + * {
+  margin-top: 1rem;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
 }
 </style>

@@ -132,10 +132,12 @@ export default new Vuex.Store({
       }
     },
 
-    async addTodoItem({ dispatch, commit }, { title, desc }) {
+    async addTodoItem({ dispatch, commit }, { title, desc, priority }) {
       let response = null
       try {
-        response = await supabase.from("Todo").insert([{ title, desc }])
+        response = await supabase
+          .from("Todo")
+          .insert([{ title, desc, priority }])
 
         await dispatch("getAllTodo")
         commit(ADD_TOAST, {

@@ -24,6 +24,14 @@
       <span v-show="isDescError" class="requiredError"
         >Description is required.</span
       >
+
+      <label for="createTodo__inputBox_priorityLabel">Priority</label>
+      <v-select
+        :options="priorities"
+        :reduce="(priority) => priority.code"
+        v-model="priority"
+        label="label"
+      />
     </div>
 
     <div class="createTodo__button">
@@ -54,10 +62,14 @@ import { mapGetters } from "vuex"
 import SpinnerIcon from "./icons/SpinnerIcon"
 import sanitizeHtml from "sanitize-html"
 
+import vSelect from "vue-select"
+import "vue-select/dist/vue-select.css"
+
 export default {
   components: {
     DeleteIcon,
     SpinnerIcon,
+    "v-select": vSelect,
   },
   props: {
     inDetailMode: {
@@ -81,6 +93,13 @@ export default {
       isTitleError: false,
       isDescError: false,
       showSpinner: false,
+      priorities: [
+        { label: "Max", code: "red" },
+        { label: "High", code: "yellow" },
+        { label: "Mid", code: "blue" },
+        { label: "Low", code: "green" },
+      ],
+      priority: "yellow",
     }
   },
   computed: {
@@ -110,6 +129,7 @@ export default {
         await this.$store.dispatch("addTodoItem", {
           title: this.title,
           desc: this.description,
+          priority: this.priority,
         })
       } catch (error) {
         throw new Error(error)
@@ -196,5 +216,12 @@ export default {
 
 .requiredError {
   color: #cc0000;
+}
+
+.v-select {
+  --vs-border-width: 3px;
+  --vs-border-color: #d1d8ff;
+  --vs-controls-color: #d1d8ff;
+  margin-bottom: 12px;
 }
 </style>

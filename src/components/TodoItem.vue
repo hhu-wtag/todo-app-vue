@@ -4,20 +4,24 @@
 
     <div class="todo__header" :class="inDetailMode && 'todo__header-detail'">
       <div v-if="!isEditing" :class="detailPageStyle">
-        <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
-          <h1 class="todo__header_title" :class="{ done: isDone }">
-            {{ todoTitle }}
-          </h1>
-        </router-link>
+        <div class="todo__header_titleContainer">
+          <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
+            <h1 class="todo__header_title" :class="{ done: isDone }">
+              {{ todoTitle }}
+            </h1>
+          </router-link>
 
-        <div class="todo__header_title-detail" v-else>
-          <h1>
-            <span>Title: </span>
-            {{ todoTitle }}
-          </h1>
-          <span v-if="isDone" class="todoCompleteLabel ml-4"
-            >Todo Completed</span
-          >
+          <div class="todo__header_title-detail" v-else>
+            <h1>
+              <span>Title: </span>
+              {{ todoTitle }}
+            </h1>
+            <span v-if="isDone" class="todoCompleteLabel ml-4"
+              >Todo Completed</span
+            >
+          </div>
+
+          <CustomBadge :code="todo.priority" />
         </div>
 
         <p class="todo__header_createdAt" :class="inDetailMode && 'text-base'">
@@ -69,6 +73,7 @@ import ActionButtons from "./ActionButtons"
 import CreateTodo from "./CreateTodo"
 import SpinnerIcon from "./icons/SpinnerIcon"
 import moment from "moment"
+import CustomBadge from "./CustomBadge.vue"
 
 export default {
   props: {
@@ -85,6 +90,7 @@ export default {
     ActionButtons,
     CreateTodo,
     SpinnerIcon,
+    CustomBadge,
   },
   data() {
     return {
@@ -106,7 +112,14 @@ export default {
     },
 
     todoTitle() {
-      return this.todo?.title
+      if (!this.inDetailMode) {
+        return (
+          this.todo?.title.slice(0, 30) +
+          (this.todo?.title.length > 30 ? "..." : "")
+        )
+      } else {
+        return this.todo?.title
+      }
     },
 
     todoDescription() {
@@ -199,12 +212,20 @@ export default {
 .todo__header {
   margin-bottom: 24px;
 
+  &_titleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
   &_title {
-    font-size: 24px;
+    font-size: 18px;
+    margin-right: 1rem;
 
     &-detail {
       display: flex;
       align-items: center;
+      margin-right: 1rem;
     }
   }
 

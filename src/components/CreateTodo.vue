@@ -11,7 +11,9 @@
         class="createTodo__inputBox_titleInput"
         v-model.trim="title"
       />
-      <span v-show="isTitleError">Title is required.</span>
+      <span v-show="isTitleError" class="requiredError"
+        >Title is required.</span
+      >
 
       <label for="createTodo__inputBox_descLabel">Description</label>
       <textarea
@@ -19,7 +21,9 @@
         :class="inDetailMode && 'createTodo__inputBox_descInput-detail'"
         v-model.trim="description"
       />
-      <span v-show="isDescError">Description is required.</span>
+      <span v-show="isDescError" class="requiredError"
+        >Description is required.</span
+      >
     </div>
 
     <div class="createTodo__button">
@@ -188,5 +192,9 @@ export default {
   &_cancel {
     margin-left: 18px;
   }
+}
+
+.requiredError {
+  color: #cc0000;
 }
 </style>

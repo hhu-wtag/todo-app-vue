@@ -222,24 +222,25 @@ export default {
         filter: ALL,
       })
 
-      this.fetchAndFilter()
+      this.todos = [...this.fetchAndFilter()]
     },
     onComplete() {
       this.$store.commit(SET_FILTER, {
         filter: COMPLETE,
       })
 
-      this.fetchAndFilter()
+      this.todos = [...this.fetchAndFilter()]
     },
     onInComplete() {
       this.$store.commit(SET_FILTER, {
         filter: INCOMPLETE,
       })
 
-      this.fetchAndFilter()
+      this.todos = [...this.fetchAndFilter()]
     },
     renderAll() {
       this.todos = this.allTodos
+      this.onAll()
     },
     onLoadMore() {
       this.$store.dispatch("setTodoLimit")

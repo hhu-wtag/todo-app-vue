@@ -1,6 +1,6 @@
 <template>
-  <nav class="navBar">
-    <div class="navBar__titleBox">
+  <nav class="navBar" :class="logoHidden && 'noLogoStyle'">
+    <div class="navBar__titleBox" v-if="!logoHidden">
       <LogoIcon />
       <p class="navBar__titleBox_title">Todos</p>
     </div>
@@ -46,6 +46,7 @@ export default {
       isSearchBarOpen: false,
       searchText: null,
       inDetailPage: false,
+      logoHidden: false,
     }
   },
 
@@ -76,6 +77,12 @@ export default {
   methods: {
     toggleSearchBar() {
       this.isSearchBarOpen = !this.isSearchBarOpen
+
+      if (window.innerWidth < 480 && this.isSearchBarOpen) {
+        this.logoHidden = true
+      } else {
+        this.logoHidden = false
+      }
     },
   },
 }
@@ -132,6 +139,19 @@ export default {
   }
   & > a:hover {
     background: #232323;
+  }
+}
+
+.noLogoStyle {
+  height: 95px;
+
+  .navBar__searchBar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navBar__searchBar_input {
+    flex: 1 0 auto;
   }
 }
 </style>

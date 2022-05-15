@@ -11,7 +11,11 @@
             </h1>
           </router-link>
 
-          <div class="todo__header_title-detail" v-else>
+          <div
+            class="todo__header_title-detail"
+            :class="detailMobileViewStyle && 'text-base'"
+            v-else
+          >
             <h1>
               <span>Title: </span>
               {{ todoTitle }}
@@ -32,7 +36,11 @@
           {{ todoDescription }}
         </p>
 
-        <p class="todo__header_desc-detail" v-else>
+        <p
+          class="todo__header_desc-detail"
+          :class="detailMobileViewStyle && 'text-sm'"
+          v-else
+        >
           {{ todoDescription }}
         </p>
       </div>
@@ -136,6 +144,14 @@ export default {
     detailPageStyle() {
       return {
         detailMode: this.inDetailMode,
+      }
+    },
+
+    detailMobileViewStyle() {
+      if (window.innerWidth < 480) {
+        return true
+      } else {
+        return false
       }
     },
   },
@@ -290,6 +306,18 @@ export default {
 
 .text-base {
   font-size: 1rem;
+}
+
+.text-sm {
+  font-size: 12px;
+}
+
+.text-xsm {
+  font-size: 10px;
+}
+
+.text-xxsm {
+  font-size: 8px;
 }
 
 .ml-4 {

@@ -19,9 +19,6 @@
               <span>Title: </span>
               {{ todoTitle }}
             </p>
-            <span v-if="isDone" class="todoCompleteLabel ml-4"
-              >Todo Completed</span
-            >
           </div>
 
           <CustomBadge :code="todo.priority" />

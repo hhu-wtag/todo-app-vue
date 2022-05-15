@@ -91,7 +91,7 @@ export default {
 <style lang="scss">
 .navBar {
   display: flex;
-  padding: 15px 150px 15px 150px;
+  padding: 15px 80px 15px 80px;
   justify-content: space-between;
   align-items: center;
   background: $bg-secondary;
@@ -142,7 +142,7 @@ export default {
 }
 
 .noLogoStyle {
-  height: 95px;
+  height: 83px;
 
   .navBar__searchBar {
     width: 100%;
@@ -151,6 +151,12 @@ export default {
 
   .navBar__searchBar_input {
     flex: 1 0 auto;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .navBar__titleBox_title {
+    font-size: 28px;
   }
 }
 </style>

@@ -126,6 +126,15 @@ li {
   .todoApp__list > :nth-child(3n) {
     margin-right: 0px;
   }
+
+  .todoApp__main,
+  .todo__detailWrapper {
+    padding: 60px !important;
+  }
+
+  .navBar {
+    padding: 15px 60px;
+  }
 }
 
 @media only screen and (max-width: 1080px) {
@@ -141,6 +150,15 @@ li {
 
   .todoApp__list > :nth-child(2n) {
     margin-right: 0px;
+  }
+
+  .todoApp__main,
+  .todo__detailWrapper {
+    padding: 40px !important;
+  }
+
+  .navBar {
+    padding: 15px 40px;
   }
 }
 
@@ -160,8 +178,12 @@ li {
   }
 
   .todoApp__main,
+  .todo__detailWrapper {
+    padding: 20px !important;
+  }
+
   .navBar {
-    padding: 20px 40px;
+    padding: 15px 20px;
   }
 
   .detailedView {
@@ -178,6 +200,10 @@ li {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
+  }
+
+  .detail__goback > a {
+    padding: 4px 8px;
   }
 }
 

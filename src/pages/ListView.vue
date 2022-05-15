@@ -259,7 +259,7 @@ export default {
 }
 
 .todoApp__main {
-  padding: 65px 150px;
+  padding: 80px;
 
   &_emptyState {
     position: fixed;
@@ -345,6 +345,7 @@ export default {
   justify-content: center;
   background-color: $bg-primary;
   width: 100%;
+  padding-bottom: 20px;
 
   &_loadMore {
     padding: 8px 18px;
@@ -363,5 +364,11 @@ export default {
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
+}
+
+@media only screen and (max-width: 480px) {
+  .todoApp__main_title {
+    font-size: 28px;
+  }
 }
 </style>

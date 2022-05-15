@@ -29,5 +29,6 @@ export default {
   padding: 4px;
   font-size: 12px;
   opacity: 0;
+  z-index: 9999;
 }
 </style>

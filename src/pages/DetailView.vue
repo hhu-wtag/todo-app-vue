@@ -91,12 +91,6 @@ export default {
 .todo__detailWrapper {
   display: flex;
   justify-content: center;
-  padding: 4rem;
-}
-
-@media only screen and (max-width: 880px) {
-  .todo__detailWrapper {
-    padding: 2rem;
-  }
+  padding: 80px;
 }
 </style>

@@ -319,7 +319,10 @@ export default {
 
 .activeFilter {
   color: $text-accent;
-  border-bottom: 3px solid $border-primary !important;
+
+  box-shadow: 0px 3px 0px 0px $border-primary;
+  -webkit-box-shadow: 0px 3px 0px 0px $border-primary;
+  -moz-box-shadow: 0px 3px 0px 0px $border-primary;
 }
 
 .todoApp__list {

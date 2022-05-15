@@ -1,5 +1,7 @@
 <template>
-  <div class="badge__container" :class="badgeStyle"></div>
+  <div class="badge__container" :class="badgeStyle">
+    <p>{{ badgeText }}</p>
+  </div>
 </template>
 
 <script>
@@ -21,22 +23,22 @@ export default {
   mounted() {
     switch (this.code) {
       case "red":
-        this.badgeText = "Urgent"
+        this.badgeText = "Priority Max"
         this.badgeStyle = "priority-red"
         break
 
       case "yellow":
-        this.badgeText = "Within Tomorrow"
+        this.badgeText = "Priority High"
         this.badgeStyle = "priority-yellow"
         break
 
       case "blue":
-        this.badgeText = "Chill Out"
+        this.badgeText = "Priority Normal"
         this.badgeStyle = "priority-blue"
         break
 
       case "green":
-        this.badgeText = "Happily Forget"
+        this.badgeText = "Priority Low"
         this.badgeStyle = "priority-green"
         break
     }
@@ -46,10 +48,11 @@ export default {
 
 <style lang="scss">
 .badge__container {
-  height: 12px;
-  width: 12px;
   border-radius: 2px;
   flex: 0 0 auto;
+  border-radius: 5px;
+  padding: 2px 4px;
+  font-size: 14px;
 }
 
 .priority-red {
@@ -57,7 +60,7 @@ export default {
 }
 
 .priority-yellow {
-  border: 2px solid #cee397;
+  border: 2px solid #ffef82;
 }
 
 .priority-blue {

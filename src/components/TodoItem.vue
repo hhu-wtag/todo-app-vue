@@ -4,22 +4,21 @@
 
     <div class="todo__header" :class="inDetailMode && 'todo__header-detail'">
       <div v-if="!isEditing" :class="detailPageStyle">
-        <div class="todo__header_titleContainer">
+        <div
+          class="todo__header_titleContainer"
+          :class="inDetailMode && detailMobileViewStyle && 'flex-col'"
+        >
           <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
-            <h1 class="todo__header_title" :class="{ done: isDone }">
+            <p class="todo__header_title" :class="{ done: isDone }">
               {{ todoTitle }}
-            </h1>
+            </p>
           </router-link>
 
-          <div
-            class="todo__header_title-detail"
-            :class="detailMobileViewStyle && 'text-base'"
-            v-else
-          >
-            <h1>
+          <div class="todo__header_title-detail" v-else>
+            <p>
               <span>Title: </span>
               {{ todoTitle }}
-            </h1>
+            </p>
             <span v-if="isDone" class="todoCompleteLabel ml-4"
               >Todo Completed</span
             >
@@ -32,17 +31,17 @@
           Created at: {{ created_at }}
         </p>
 
-        <p class="todo__header_desc" v-if="!inDetailMode">
-          {{ todoDescription }}
-        </p>
+        <div v-if="!inDetailMode">
+          <p class="todo__header_desc">
+            {{ todoDescription }}
+          </p>
+        </div>
 
-        <p
-          class="todo__header_desc-detail"
-          :class="detailMobileViewStyle && 'text-sm'"
-          v-else
-        >
-          {{ todoDescription }}
-        </p>
+        <div class="todo__header_descContainer" v-else>
+          <p class="todo__header_desc-detail">
+            {{ todoDescription }}
+          </p>
+        </div>
       </div>
       <CreateTodo
         v-else
@@ -53,7 +52,7 @@
         :class="{ createTodo__detailed: inDetailMode }"
       />
     </div>
-    <div class="todo__footer">
+    <div class="todo__footer" :class="inDetailMode && 'justify-center'">
       <ActionButtons
         identifier="todoButtons"
         :todo="todo"
@@ -223,6 +222,7 @@ export default {
 .todo {
   position: relative;
   justify-content: space-between;
+  overflow: hidden;
 }
 
 .todo__header {
@@ -235,13 +235,16 @@ export default {
   }
 
   &_title {
-    font-size: 18px;
     margin-right: 1rem;
+    font-size: 16px;
+    font-weight: bold;
 
     &-detail {
       display: flex;
       align-items: center;
       margin-right: 1rem;
+      font-size: 24px;
+      font-weight: bold;
     }
   }
 
@@ -250,7 +253,7 @@ export default {
     color: $text-secondary;
 
     &-detail {
-      font-size: 1.5rem;
+      font-size: 18px;
     }
   }
 
@@ -258,10 +261,6 @@ export default {
     font-size: 14px;
     font-weight: bold;
     color: $text-secondary;
-  }
-
-  &-detail {
-    width: 70%;
   }
 }
 
@@ -322,5 +321,19 @@ export default {
 
 .ml-4 {
   margin-left: 1rem;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+@media only screen and (max-width: 480px) {
+  .todo__header_titleContainer > * + * {
+    margin-top: 8px;
+  }
 }
 </style>

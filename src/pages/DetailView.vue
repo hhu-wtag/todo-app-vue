@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="todo__detailWrapper">
     <ModalDialogue
       v-if="showModal"
       @confirm="onDelete"
@@ -84,8 +84,19 @@ export default {
 <style lang="scss">
 .detailedView {
   width: 100% !important;
-  height: 80vh;
+
   padding: 5rem 10rem;
-  align-items: center;
+}
+
+.todo__detailWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 4rem;
+}
+
+@media only screen and (max-width: 880px) {
+  .todo__detailWrapper {
+    padding: 2rem;
+  }
 }
 </style>

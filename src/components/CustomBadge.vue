@@ -48,11 +48,14 @@ export default {
 
 <style lang="scss">
 .badge__container {
+  display: flex;
   border-radius: 2px;
   flex: 0 0 auto;
   border-radius: 5px;
   padding: 2px 4px;
   font-size: 14px;
+  justify-content: center;
+  align-items: center;
 }
 
 .priority-red {

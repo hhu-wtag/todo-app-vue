@@ -201,11 +201,14 @@ export default new Vuex.Store({
       }
     },
 
-    async setTodoUpdate({ dispatch }, { id, editedTitle, editedDesc }) {
+    async setTodoUpdate(
+      { dispatch },
+      { id, editedTitle, editedDesc, priority }
+    ) {
       try {
         const response = await supabase
           .from("Todo")
-          .update({ title: editedTitle, desc: editedDesc })
+          .update({ title: editedTitle, desc: editedDesc, priority })
           .eq("id", id)
 
         dispatch("getAllTodo")

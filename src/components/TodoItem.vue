@@ -21,7 +21,7 @@
             </p>
           </div>
 
-          <CustomBadge :code="todo.priority" />
+          <CustomBadge :code="todoPriority" />
         </div>
 
         <p class="todo__header_createdAt" :class="inDetailMode && 'text-base'">
@@ -104,6 +104,7 @@ export default {
       showSpinner: false,
     }
   },
+
   computed: {
     isDone() {
       return this.todo?.done
@@ -135,6 +136,10 @@ export default {
       } else {
         return this.todo?.desc
       }
+    },
+
+    todoPriority() {
+      return this.todo?.priority
     },
 
     detailPageStyle() {
@@ -190,7 +195,7 @@ export default {
       this.isEditing = false
       this.editText = null
     },
-    async onEditUpdate(title, desc) {
+    async onEditUpdate(title, desc, priority) {
       this.showSpinner = true
 
       try {
@@ -198,6 +203,7 @@ export default {
           id: this.todo.id,
           editedTitle: title,
           editedDesc: desc,
+          priority,
         })
       } catch (error) {
         throw new Error(error)

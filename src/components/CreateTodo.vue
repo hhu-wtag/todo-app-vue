@@ -143,7 +143,7 @@ export default {
     onUpdate() {
       if (!this.isValidate()) return
 
-      this.$emit("update", this.title, this.description)
+      this.$emit("update", this.title, this.description, this.priority)
     },
     onCancel() {
       this.$emit("cancel")
@@ -222,6 +222,19 @@ export default {
   --vs-border-width: 3px;
   --vs-border-color: #d1d8ff;
   --vs-controls-color: #d1d8ff;
+  --vs-actions-padding: 0px 4px;
   margin-bottom: 12px;
+}
+
+.vs__clear > svg {
+  width: 20px;
+}
+
+.vs__open-indicator {
+  width: 20px;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>

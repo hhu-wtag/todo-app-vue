@@ -20,28 +20,40 @@ export default {
     }
   },
 
+  watch: {
+    code: function () {
+      this.applyBadge()
+    },
+  },
+
+  methods: {
+    applyBadge() {
+      switch (this.code) {
+        case "red":
+          this.badgeText = "Priority Max"
+          this.badgeStyle = "priority-red"
+          break
+
+        case "yellow":
+          this.badgeText = "Priority High"
+          this.badgeStyle = "priority-yellow"
+          break
+
+        case "blue":
+          this.badgeText = "Priority Normal"
+          this.badgeStyle = "priority-blue"
+          break
+
+        case "green":
+          this.badgeText = "Priority Low"
+          this.badgeStyle = "priority-green"
+          break
+      }
+    },
+  },
+
   mounted() {
-    switch (this.code) {
-      case "red":
-        this.badgeText = "Priority Max"
-        this.badgeStyle = "priority-red"
-        break
-
-      case "yellow":
-        this.badgeText = "Priority High"
-        this.badgeStyle = "priority-yellow"
-        break
-
-      case "blue":
-        this.badgeText = "Priority Normal"
-        this.badgeStyle = "priority-blue"
-        break
-
-      case "green":
-        this.badgeText = "Priority Low"
-        this.badgeStyle = "priority-green"
-        break
-    }
+    this.applyBadge()
   },
 }
 </script>
@@ -63,14 +75,14 @@ export default {
 }
 
 .priority-yellow {
-  border: 2px solid #ffef82;
+  border: 2px solid #ffe430;
 }
 
 .priority-blue {
-  border: 2px solid #cddeff;
+  border: 2px solid #9abcff;
 }
 
 .priority-green {
-  border: 2px solid #fbf3e4;
+  border: 2px solid #6ff49d;
 }
 </style>

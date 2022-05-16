@@ -31,5 +31,6 @@ export default {
   font-size: 12px;
   opacity: 0;
   z-index: 9999;
+  min-width: 5rem;
 }
 </style>

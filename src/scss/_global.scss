@@ -221,7 +221,8 @@ li {
   }
 }
 
-.actionButton:hover + .tooltip {
+.actionButton:hover + .tooltip,
+.priorityIcon:hover + .tooltip {
   opacity: 1;
 }
 

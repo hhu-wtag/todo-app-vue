@@ -94,12 +94,11 @@ export default {
       isDescError: false,
       showSpinner: false,
       priorities: [
-        { label: "Max", code: "red" },
-        { label: "High", code: "yellow" },
-        { label: "Mid", code: "blue" },
-        { label: "Low", code: "green" },
+        { label: "High", code: "high" },
+        { label: "Mid", code: "mid" },
+        { label: "Low", code: "low" },
       ],
-      priority: "yellow",
+      priority: "mid",
     }
   },
   computed: {

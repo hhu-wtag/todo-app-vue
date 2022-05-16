@@ -16,6 +16,7 @@ export default {
 <style>
 .tooltip {
   position: absolute;
+  flex: 0 0 auto;
   top: -35px;
   left: 50%;
   transform: translateX(-50%);

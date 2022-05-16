@@ -1,10 +1,17 @@
 <template>
-  <div class="badge__container" :class="badgeStyle">
-    <p>{{ badgeText }}</p>
+  <div class="badge__container">
+    <UpIcon v-if="highPriority" />
+
+    <EqualIcon v-if="midPriority" />
+
+    <DownIcon v-if="lowPriority" />
   </div>
 </template>
 
 <script>
+import UpIcon from "./icons/UpIcon.vue"
+import EqualIcon from "./icons/EqualIcon.vue"
+import DownIcon from "./icons/DownIcon.vue"
 export default {
   props: {
     code: {
@@ -12,12 +19,25 @@ export default {
       required: true,
     },
   },
-
   data() {
     return {
-      badgeText: null,
-      badgeStyle: null,
+      badgeType: null,
+      badgeSvgColor: null,
     }
+  },
+
+  computed: {
+    highPriority() {
+      return this.badgeType === "high"
+    },
+
+    midPriority() {
+      return this.badgeType === "mid"
+    },
+
+    lowPriority() {
+      return this.badgeType === "low"
+    },
   },
 
   watch: {
@@ -25,64 +45,45 @@ export default {
       this.applyBadge()
     },
   },
-
   methods: {
     applyBadge() {
       switch (this.code) {
-        case "red":
-          this.badgeText = "Priority Max"
-          this.badgeStyle = "priority-red"
+        case "high":
+          this.badgeType = "high"
+          this.badgeSvgColor = "color: red;"
           break
-
-        case "yellow":
-          this.badgeText = "Priority High"
-          this.badgeStyle = "priority-yellow"
+        case "mid":
+          this.badgeType = "mid"
+          this.badgeSvgColor = "color: blue;"
           break
-
-        case "blue":
-          this.badgeText = "Priority Normal"
-          this.badgeStyle = "priority-blue"
-          break
-
-        case "green":
-          this.badgeText = "Priority Low"
-          this.badgeStyle = "priority-green"
+        case "low":
+          this.badgeType = "low"
+          this.badgeSvgColor = "color: green;"
           break
       }
     },
   },
-
   mounted() {
     this.applyBadge()
   },
+  components: { UpIcon, EqualIcon, DownIcon },
 }
 </script>
 
 <style lang="scss">
 .badge__container {
   display: flex;
-  border-radius: 2px;
-  flex: 0 0 auto;
-  border-radius: 5px;
-  padding: 2px 4px;
-  font-size: 14px;
-  justify-content: center;
-  align-items: center;
 }
 
-.priority-red {
-  border: 2px solid #ff6363;
+.priority-high {
+  color: red;
 }
 
-.priority-yellow {
-  border: 2px solid #ffe430;
+.priority-mid {
+  color: blue;
 }
 
-.priority-blue {
-  border: 2px solid #9abcff;
-}
-
-.priority-green {
-  border: 2px solid #6ff49d;
+.priority-low {
+  color: green;
 }
 </style>

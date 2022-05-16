@@ -225,7 +225,6 @@ export default {
 .todo {
   position: relative;
   justify-content: space-between;
-  overflow: hidden;
 }
 
 .todo__header {

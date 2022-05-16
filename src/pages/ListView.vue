@@ -222,24 +222,25 @@ export default {
         filter: ALL,
       })
 
-      this.fetchAndFilter()
+      this.todos = [...this.fetchAndFilter()]
     },
     onComplete() {
       this.$store.commit(SET_FILTER, {
         filter: COMPLETE,
       })
 
-      this.fetchAndFilter()
+      this.todos = [...this.fetchAndFilter()]
     },
     onInComplete() {
       this.$store.commit(SET_FILTER, {
         filter: INCOMPLETE,
       })
 
-      this.fetchAndFilter()
+      this.todos = [...this.fetchAndFilter()]
     },
     renderAll() {
       this.todos = this.allTodos
+      this.onAll()
     },
     onLoadMore() {
       this.$store.dispatch("setTodoLimit")
@@ -258,7 +259,7 @@ export default {
 }
 
 .todoApp__main {
-  padding: 65px 150px;
+  padding: 80px;
 
   &_emptyState {
     position: fixed;
@@ -318,7 +319,10 @@ export default {
 
 .activeFilter {
   color: $text-accent;
-  border-bottom: 3px solid $border-primary !important;
+
+  box-shadow: 0px 3px 0px 0px $border-primary;
+  -webkit-box-shadow: 0px 3px 0px 0px $border-primary;
+  -moz-box-shadow: 0px 3px 0px 0px $border-primary;
 }
 
 .todoApp__list {
@@ -341,6 +345,7 @@ export default {
   justify-content: center;
   background-color: $bg-primary;
   width: 100%;
+  padding-bottom: 20px;
 
   &_loadMore {
     padding: 8px 18px;
@@ -359,5 +364,11 @@ export default {
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
+}
+
+@media only screen and (max-width: 480px) {
+  .todoApp__main_title {
+    font-size: 28px;
+  }
 }
 </style>

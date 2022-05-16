@@ -1,11 +1,12 @@
 <template>
-  <nav class="navBar">
-    <div class="navBar__titleBox">
+  <nav class="navBar" :class="logoHidden && 'noLogoStyle'">
+    <div class="navBar__titleBox" v-if="!logoHidden">
       <LogoIcon />
       <p class="navBar__titleBox_title">Todos</p>
     </div>
     <div class="navBar__searchBar">
       <input
+        v-show="!inDetailPage"
         type="text"
         v-if="isSearchBarOpen"
         class="navBar__searchBar_input"
@@ -45,6 +46,7 @@ export default {
       isSearchBarOpen: false,
       searchText: null,
       inDetailPage: false,
+      logoHidden: false,
     }
   },
 
@@ -75,6 +77,12 @@ export default {
   methods: {
     toggleSearchBar() {
       this.isSearchBarOpen = !this.isSearchBarOpen
+
+      if (window.innerWidth < 480 && this.isSearchBarOpen) {
+        this.logoHidden = true
+      } else {
+        this.logoHidden = false
+      }
     },
   },
 }
@@ -83,7 +91,7 @@ export default {
 <style lang="scss">
 .navBar {
   display: flex;
-  padding: 15px 150px 15px 150px;
+  padding: 15px 80px 15px 80px;
   justify-content: space-between;
   align-items: center;
   background: $bg-secondary;
@@ -121,7 +129,6 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
 
   & > a {
     background: $text-primary;
@@ -131,6 +138,25 @@ export default {
   }
   & > a:hover {
     background: #232323;
+  }
+}
+
+.noLogoStyle {
+  height: 83px;
+
+  .navBar__searchBar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navBar__searchBar_input {
+    flex: 1 0 auto;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .navBar__titleBox_title {
+    font-size: 28px;
   }
 }
 </style>

@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="todo__detailWrapper">
     <ModalDialogue
       v-if="showModal"
       @confirm="onDelete"
       @cancel="onModalCancel"
     />
     <p v-if="noItem">No Item Found.</p>
+
+    <SpinnerIcon v-if="showSpinner" />
 
     <TodoItem
       v-if="showTodoItemComponent"
@@ -21,14 +23,16 @@
 import TodoItem from "@/components/TodoItem"
 import ModalDialogue from "@/components/ModalDialogue"
 import { mapGetters } from "vuex"
+import SpinnerIcon from "@/components/icons/SpinnerIcon.vue"
 export default {
-  components: { TodoItem, ModalDialogue },
+  components: { TodoItem, ModalDialogue, SpinnerIcon },
 
   data() {
     return {
       todoItem: null,
       noItem: false,
       showModal: false,
+      showSpinner: false,
     }
   },
   watch: {
@@ -65,11 +69,13 @@ export default {
       this.showModal = true
     },
     async fetchTodo() {
+      this.showSpinner = true
       let response = await this.$store.dispatch("getTodo", {
         id: this.$route.params.id,
       })
 
       this.todoItem = response
+      this.showSpinner = false
     },
   },
 }
@@ -78,8 +84,13 @@ export default {
 <style lang="scss">
 .detailedView {
   width: 100% !important;
-  height: 80vh;
+
   padding: 5rem 10rem;
-  align-items: center;
+}
+
+.todo__detailWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 80px;
 }
 </style>

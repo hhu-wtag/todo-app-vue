@@ -16,7 +16,8 @@ export default {
 <style>
 .tooltip {
   position: absolute;
-  top: 35px;
+  flex: 0 0 auto;
+  top: -35px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -29,5 +30,6 @@ export default {
   padding: 4px;
   font-size: 12px;
   opacity: 0;
+  z-index: 9999;
 }
 </style>

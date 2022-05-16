@@ -98,6 +98,7 @@ li {
 .card {
   box-sizing: border-box;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   background-color: $bg-secondary;
   color: $text-primary;
@@ -105,6 +106,105 @@ li {
   border-radius: 5px;
   width: calc((100% / #{$columns}) - #{$gap} + (#{$gap} / #{$columns}));
   padding: 15px;
+}
+
+.todoApp__list > :not(:nth-child(4n)) {
+  margin-right: $gap;
+}
+
+@media only screen and (max-width: 1366px) {
+  $columns: 3;
+
+  .card {
+    width: calc((100% / #{$columns}) - #{$gap} + (#{$gap} / #{$columns}));
+  }
+
+  .todoApp__list > :not(:nth-child(3n)) {
+    margin-right: $gap;
+  }
+
+  .todoApp__list > :nth-child(3n) {
+    margin-right: 0px;
+  }
+
+  .todoApp__main,
+  .todo__detailWrapper {
+    padding: 60px !important;
+  }
+
+  .navBar {
+    padding: 15px 60px;
+  }
+}
+
+@media only screen and (max-width: 1080px) {
+  $columns: 2;
+
+  .card {
+    width: calc((100% / #{$columns}) - #{$gap} + (#{$gap} / #{$columns}));
+  }
+
+  .todoApp__list > :not(:nth-child(2n)) {
+    margin-right: $gap;
+  }
+
+  .todoApp__list > :nth-child(2n) {
+    margin-right: 0px;
+  }
+
+  .todoApp__main,
+  .todo__detailWrapper {
+    padding: 40px !important;
+  }
+
+  .navBar {
+    padding: 15px 40px;
+  }
+}
+
+@media only screen and (max-width: 820px) {
+  $columns: 1;
+
+  .card {
+    width: calc((100% / #{$columns}) - #{$gap} + (#{$gap} / #{$columns}));
+  }
+
+  .todoApp__list > :not(:nth-child(n)) {
+    margin-right: $gap;
+  }
+
+  .todoApp__list > :nth-child(n) {
+    margin-right: 0px;
+  }
+
+  .todoApp__main,
+  .todo__detailWrapper {
+    padding: 20px !important;
+  }
+
+  .navBar {
+    padding: 15px 20px;
+  }
+
+  .detailedView {
+    padding: 20px 40px !important;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .todoApp__button {
+    flex-direction: column;
+  }
+
+  .todoApp__button_filterButton {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+
+  .detail__goback > a {
+    padding: 4px 8px;
+  }
 }
 
 .btn {
@@ -121,7 +221,8 @@ li {
   }
 }
 
-.actionButton:hover + .tooltip {
+.actionButton:hover + .tooltip,
+.priorityIcon:hover + .tooltip {
   opacity: 1;
 }
 

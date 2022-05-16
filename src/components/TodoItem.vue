@@ -2,25 +2,43 @@
   <div class="todo" :class="{ disabled: showSpinner }">
     <SpinnerIcon v-if="showSpinner" />
 
-    <div class="todo__header">
-      <div v-if="!isEditing">
-        <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
-          <h1 class="todo__header_title" :class="{ done: isDone }">
-            {{ todo.title }}
-          </h1>
-        </router-link>
+    <div class="todo__header" :class="inDetailMode && 'todo__header-detail'">
+      <div v-if="!isEditing" :class="detailPageStyle">
+        <div
+          class="todo__header_titleContainer"
+          :class="inDetailMode && detailMobileViewStyle && 'flex-col'"
+        >
+          <router-link v-if="!inDetailMode" :to="`/details/${todo.id}`">
+            <p class="todo__header_title" :class="{ done: isDone }">
+              {{ todoTitle }}
+            </p>
+          </router-link>
 
-        <h1 v-else><span>Title: </span>{{ todoTitle }}</h1>
+          <div class="todo__header_title-detail" v-else>
+            <p>
+              <span>Title: </span>
+              {{ todoTitle }}
+            </p>
+          </div>
 
-        <p class="todo__header_createdAt">Created at: {{ created_at }}</p>
+          <CustomBadge :code="todoPriority" />
+        </div>
 
-        <p class="todo__header_desc" v-if="!inDetailMode">
-          {{ todo.desc }}
+        <p class="todo__header_createdAt" :class="inDetailMode && 'text-base'">
+          Created at: {{ created_at }}
         </p>
 
-        <p class="todo__header_desc" v-else>
-          <span>Description: </span>{{ todo && todo.desc }}
-        </p>
+        <div v-if="!inDetailMode">
+          <p class="todo__header_desc">
+            {{ todoDescription }}
+          </p>
+        </div>
+
+        <div class="todo__header_descContainer" v-else>
+          <p class="todo__header_desc-detail">
+            {{ todoDescription }}
+          </p>
+        </div>
       </div>
       <CreateTodo
         v-else
@@ -31,7 +49,7 @@
         :class="{ createTodo__detailed: inDetailMode }"
       />
     </div>
-    <div class="todo__footer">
+    <div class="todo__footer" :class="inDetailMode && 'justify-center'">
       <ActionButtons
         identifier="todoButtons"
         :todo="todo"
@@ -43,7 +61,11 @@
         @cancel="onCancel"
       />
 
-      <div v-if="isDone" class="todo__footer-completedIn">
+      <div
+        v-if="isDone"
+        class="todo__footer-completedIn"
+        :class="inDetailMode && 'ml-4'"
+      >
         Completed in {{ doneInDays }}
       </div>
     </div>
@@ -55,6 +77,7 @@ import ActionButtons from "./ActionButtons"
 import CreateTodo from "./CreateTodo"
 import SpinnerIcon from "./icons/SpinnerIcon"
 import moment from "moment"
+import CustomBadge from "./CustomBadge.vue"
 
 export default {
   props: {
@@ -71,6 +94,7 @@ export default {
     ActionButtons,
     CreateTodo,
     SpinnerIcon,
+    CustomBadge,
   },
   data() {
     return {
@@ -80,6 +104,7 @@ export default {
       showSpinner: false,
     }
   },
+
   computed: {
     isDone() {
       return this.todo?.done
@@ -87,11 +112,48 @@ export default {
     created_at() {
       return moment.utc(this.todo?.created_at).format("DD.MM.YY")
     },
-    todoTitle() {
-      return this.todo?.title
-    },
     doneInDays() {
       return `${this.todo?.doneIn} ${this.todo?.doneIn === 0 ? "day" : "days"}`
+    },
+
+    todoTitle() {
+      if (!this.inDetailMode) {
+        return (
+          this.todo?.title.slice(0, 30) +
+          (this.todo?.title.length > 30 ? "..." : "")
+        )
+      } else {
+        return this.todo?.title
+      }
+    },
+
+    todoDescription() {
+      if (!this.inDetailMode) {
+        return (
+          this.todo?.desc.slice(0, 55) +
+          (this.todo?.desc.length > 55 ? "..." : "")
+        )
+      } else {
+        return this.todo?.desc
+      }
+    },
+
+    todoPriority() {
+      return this.todo?.priority
+    },
+
+    detailPageStyle() {
+      return {
+        detailMode: this.inDetailMode,
+      }
+    },
+
+    detailMobileViewStyle() {
+      if (window.innerWidth < 480) {
+        return true
+      } else {
+        return false
+      }
     },
   },
   methods: {
@@ -133,7 +195,7 @@ export default {
       this.isEditing = false
       this.editText = null
     },
-    async onEditUpdate(title, desc) {
+    async onEditUpdate(title, desc, priority) {
       this.showSpinner = true
 
       try {
@@ -141,6 +203,7 @@ export default {
           id: this.todo.id,
           editedTitle: title,
           editedDesc: desc,
+          priority,
         })
       } catch (error) {
         throw new Error(error)
@@ -167,13 +230,33 @@ export default {
 .todo__header {
   margin-bottom: 24px;
 
+  &_titleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
   &_title {
-    font-size: 24px;
+    margin-right: 1rem;
+    font-size: 16px;
+    font-weight: bold;
+
+    &-detail {
+      display: flex;
+      align-items: center;
+      margin-right: 1rem;
+      font-size: 24px;
+      font-weight: bold;
+    }
   }
 
   &_desc {
     font-size: 14px;
     color: $text-secondary;
+
+    &-detail {
+      font-size: 18px;
+    }
   }
 
   &_createdAt {
@@ -200,5 +283,59 @@ export default {
 .createTodo__detailed {
   width: 100% !important;
   align-items: center;
+}
+
+.detailMode {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.detailMode > * + * {
+  margin-top: 1rem;
+}
+
+.todoCompleteLabel {
+  font-size: 14px;
+  background-color: $text-success;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 5px;
+  height: fit-content;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-sm {
+  font-size: 12px;
+}
+
+.text-xsm {
+  font-size: 10px;
+}
+
+.text-xxsm {
+  font-size: 8px;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+@media only screen and (max-width: 480px) {
+  .todo__header_titleContainer > * + * {
+    margin-top: 8px;
+  }
 }
 </style>

@@ -8,6 +8,7 @@ const exampleTodo = {
   desc: "Lorem ipsum set amit dolor",
   id: "sadfkasdfkajdfjadsf",
   done: false,
+  priority: "high",
 }
 
 describe("@component/TodoItem", () => {
@@ -26,6 +27,8 @@ describe("@component/TodoItem", () => {
           showSpinner: false,
         }
       },
+
+      stubs: ["router-link"],
     })
 
     await wrapper.setData({
@@ -50,6 +53,8 @@ describe("@component/TodoItem", () => {
           showSpinner: false,
         }
       },
+
+      stubs: ["router-link"],
     })
 
     await wrapper.setData({
@@ -109,7 +114,9 @@ describe("@component/TodoItem", () => {
       stubs: ["router-link"],
     })
 
-    expect(wrapper.find(".todo__header_title").text()).toContain(expectedTitle)
+    expect(wrapper.find(".todo__header_title-detail > p").text()).toContain(
+      expectedTitle
+    )
   })
 
   it("shows only description when not in edit mode", async () => {
@@ -135,36 +142,6 @@ describe("@component/TodoItem", () => {
     })
 
     expect(wrapper.find(".todo__header_desc").text()).toContain(todoDescription)
-  })
-
-  it("shows Description: description when in edit mode", async () => {
-    const todoDescription = "Some Description"
-    const expectedDescription = `Description: ${todoDescription}`
-
-    const wrapper = shallowMount(TodoItem, {
-      propsData: {
-        todo: {
-          ...exampleTodo,
-          desc: todoDescription,
-        },
-
-        inDetailMode: true,
-      },
-      data: function () {
-        return {
-          editText: null,
-          isEditing: false,
-          todoDetails: null,
-          showSpinner: true,
-        }
-      },
-
-      stubs: ["router-link"],
-    })
-
-    expect(wrapper.find(".todo__header_desc").text()).toContain(
-      expectedDescription
-    )
   })
 
   it("shows CreateTodo Component when in edit mode", async () => {

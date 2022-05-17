@@ -11,7 +11,9 @@
         class="createTodo__inputBox_titleInput"
         v-model.trim="title"
       />
-      <span v-show="isTitleError" class="requiredError"
+      <span
+        v-show="isTitleError"
+        class="createTodo__inputBox_error requiredError"
         >Title is required.</span
       >
 
@@ -21,7 +23,7 @@
         :class="inDetailMode && 'createTodo__inputBox_descInput-detail'"
         v-model.trim="description"
       />
-      <span v-show="isDescError" class="requiredError"
+      <span v-show="isDescError" class="createTodo__Desc_error requiredError"
         >Description is required.</span
       >
 

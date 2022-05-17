@@ -19,52 +19,19 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      badgeType: null,
-      badgeSvgColor: null,
-    }
-  },
 
   computed: {
     highPriority() {
-      return this.badgeType === "high"
+      return this.code === "high"
     },
 
     midPriority() {
-      return this.badgeType === "mid"
+      return this.code === "mid"
     },
 
     lowPriority() {
-      return this.badgeType === "low"
+      return this.code === "low"
     },
-  },
-
-  watch: {
-    code: function () {
-      this.applyBadge()
-    },
-  },
-  methods: {
-    applyBadge() {
-      switch (this.code) {
-        case "high":
-          this.badgeType = "high"
-          this.badgeSvgColor = "color: red;"
-          break
-        case "mid":
-          this.badgeType = "mid"
-          this.badgeSvgColor = "color: blue;"
-          break
-        case "low":
-          this.badgeType = "low"
-          this.badgeSvgColor = "color: green;"
-          break
-      }
-    },
-  },
-  mounted() {
-    this.applyBadge()
   },
   components: { UpIcon, EqualIcon, DownIcon },
 }
@@ -80,17 +47,5 @@ export default {
   &:hover .priorityIcon {
     transform: scale(1.5);
   }
-}
-
-.priority-high {
-  color: red;
-}
-
-.priority-mid {
-  color: blue;
-}
-
-.priority-low {
-  color: green;
 }
 </style>

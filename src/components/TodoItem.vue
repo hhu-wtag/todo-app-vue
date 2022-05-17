@@ -15,10 +15,7 @@
           </router-link>
 
           <div class="todo__header_title-detail" v-else>
-            <p>
-              <span>Title: </span>
-              {{ todoTitle }}
-            </p>
+            <p><span>Title: </span>{{ todoTitle }}</p>
           </div>
 
           <CustomBadge :code="todoPriority" />
@@ -156,6 +153,7 @@ export default {
       }
     },
   },
+
   methods: {
     async onDone() {
       this.isEditing = false

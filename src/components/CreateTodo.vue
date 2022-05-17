@@ -242,4 +242,8 @@ export default {
     cursor: pointer;
   }
 }
+
+.vs__dropdown-toggle {
+  padding: 0px;
+}
 </style>

@@ -71,8 +71,15 @@ export default {
 </script>
 
 <style lang="scss">
+.priorityIcon {
+  transition: transform 200ms ease-in-out;
+}
 .badge__container {
   display: flex;
+
+  &:hover .priorityIcon {
+    transform: scale(1.5);
+  }
 }
 
 .priority-high {

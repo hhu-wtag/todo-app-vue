@@ -19,7 +19,8 @@
       <div class="todoApp__header" :class="{ disabled: showSpinner }">
         <div class="todoApp__button">
           <button class="todoApp__button_createButton btn" @click="onCreate">
-            Create
+            <PlusIcon class="todoApp__button_createButton-icon" />
+            <span class="todoApp__button_createButton-label">Create</span>
           </button>
 
           <div class="todoApp__button_filterButton">
@@ -97,6 +98,7 @@ import SpinnerIcon from "@/components/icons/SpinnerIcon"
 import ToastBar from "@/components/ToastBar"
 import { SET_FILTER, RESET_LIMIT } from "@/stores/mutation-types"
 import { ALL, INCOMPLETE, COMPLETE } from "@/utils/constants"
+import PlusIcon from "@/components/icons/PlusIcon.vue"
 
 export default {
   components: {
@@ -106,6 +108,7 @@ export default {
     EmptyStateIcon,
     SpinnerIcon,
     ToastBar,
+    PlusIcon,
   },
   data: function () {
     return {
@@ -298,11 +301,37 @@ export default {
   margin-bottom: 34px;
 
   &_createButton {
+    position: relative;
     background: $text-accent;
     color: $bg-secondary;
     padding: 8px 12px;
     border: 1px solid #d1d8ff;
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 5.5rem;
+
+    &-icon,
+    &-label {
+      transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+    }
+
+    &-icon {
+      position: absolute;
+      left: 0;
+      opacity: 0;
+    }
+
+    &:hover &-label {
+      transform: translateX(7px);
+    }
+
+    &:hover &-icon {
+      opacity: 1;
+      left: 0;
+      transform: translateX(7px);
+    }
   }
 
   &_filterButton > button {

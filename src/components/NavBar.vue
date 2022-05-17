@@ -1,18 +1,30 @@
 <template>
-  <nav class="navBar">
-    <div class="navBar__titleBox">
+  <nav class="navBar" :class="logoHidden && 'noLogoStyle'">
+    <div class="navBar__titleBox" v-if="!logoHidden">
       <LogoIcon />
       <p class="navBar__titleBox_title">Todos</p>
     </div>
     <div class="navBar__searchBar">
       <input
+        v-show="!inDetailPage"
         type="text"
         v-if="isSearchBarOpen"
         class="navBar__searchBar_input"
+        v-model="searchText"
       />
 
-      <div class="navBar__searchBar_logo btn" @click="onSearch">
+      <div
+        v-if="!inDetailPage"
+        class="navBar__searchBar_logo btn"
+        @click="toggleSearchBar"
+      >
         <SearchIcon />
+      </div>
+
+      <div v-else>
+        <div class="detail__goback">
+          <router-link to="/">Go Back</router-link>
+        </div>
       </div>
     </div>
   </nav>
@@ -21,6 +33,8 @@
 <script>
 import LogoIcon from "@/components/icons/LogoIcon"
 import SearchIcon from "@/components/icons/SearchIcon"
+import { SET_SEARCH_STATE } from "@/stores/mutation-types"
+import { debounce } from "@/utils/debounce"
 
 export default {
   components: {
@@ -30,12 +44,45 @@ export default {
   data() {
     return {
       isSearchBarOpen: false,
+      searchText: null,
+      inDetailPage: false,
+      logoHidden: false,
     }
   },
 
+  created() {
+    if (this.$router.history.current.name === "details") {
+      this.inDetailPage = true
+    }
+  },
+
+  watch: {
+    searchText: debounce(async function () {
+      this.$store.commit(SET_SEARCH_STATE, { isSearching: true })
+      await this.$store.dispatch("getSearchData", {
+        searchText: this.searchText,
+      })
+
+      this.$store.commit(SET_SEARCH_STATE, { isSearching: false })
+    }, 500),
+
+    $route: function (to) {
+      if (to.name === "details") {
+        this.inDetailPage = true
+      } else {
+        this.inDetailPage = false
+      }
+    },
+  },
   methods: {
-    onSearch() {
+    toggleSearchBar() {
       this.isSearchBarOpen = !this.isSearchBarOpen
+
+      if (window.innerWidth < 480 && this.isSearchBarOpen) {
+        this.logoHidden = true
+      } else {
+        this.logoHidden = false
+      }
     },
   },
 }
@@ -44,7 +91,7 @@ export default {
 <style lang="scss">
 .navBar {
   display: flex;
-  padding: 15px 150px 15px 150px;
+  padding: 15px 80px 15px 80px;
   justify-content: space-between;
   align-items: center;
   background: $bg-secondary;
@@ -75,6 +122,41 @@ export default {
     display: inline-flex;
     align-items: center;
     margin-left: 18px;
+  }
+}
+
+.detail__goback {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  & > a {
+    background: $text-primary;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+  }
+  & > a:hover {
+    background: #232323;
+  }
+}
+
+.noLogoStyle {
+  height: 83px;
+
+  .navBar__searchBar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navBar__searchBar_input {
+    flex: 1 0 auto;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .navBar__titleBox_title {
+    font-size: 28px;
   }
 }
 </style>

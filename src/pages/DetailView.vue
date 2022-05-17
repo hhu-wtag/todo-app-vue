@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="todo__detailWrapper">
     <ModalDialogue
       v-if="showModal"
       @confirm="onDelete"
@@ -7,17 +7,15 @@
     />
     <p v-if="noItem">No Item Found.</p>
 
+    <SpinnerIcon v-if="showSpinner" />
+
     <TodoItem
-      v-else
+      v-if="showTodoItemComponent"
       :todo="todoItem"
       :inDetailMode="true"
       class="card detailedView"
       @delete="onTodoDelete"
     />
-
-    <div class="detail__goback">
-      <router-link to="/">Go Back</router-link>
-    </div>
   </div>
 </template>
 
@@ -25,14 +23,16 @@
 import TodoItem from "@/components/TodoItem"
 import ModalDialogue from "@/components/ModalDialogue"
 import { mapGetters } from "vuex"
+import SpinnerIcon from "@/components/icons/SpinnerIcon.vue"
 export default {
-  components: { TodoItem, ModalDialogue },
+  components: { TodoItem, ModalDialogue, SpinnerIcon },
 
   data() {
     return {
       todoItem: null,
       noItem: false,
       showModal: false,
+      showSpinner: false,
     }
   },
   watch: {
@@ -46,8 +46,12 @@ export default {
     todo() {
       return this.getTodo(this.$route.params.id)
     },
+
+    showTodoItemComponent() {
+      return !this.noItem && this.todoItem !== null
+    },
   },
-  created() {
+  mounted() {
     this.fetchTodo()
   },
   methods: {
@@ -64,14 +68,14 @@ export default {
     onTodoDelete() {
       this.showModal = true
     },
-    fetchTodo() {
-      const { status, todo } = this.todo
+    async fetchTodo() {
+      this.showSpinner = true
+      let response = await this.$store.dispatch("getTodo", {
+        id: this.$route.params.id,
+      })
 
-      if (status === "ok") {
-        this.todoItem = todo
-      } else {
-        this.noItem = true
-      }
+      this.todoItem = response
+      this.showSpinner = false
     },
   },
 }
@@ -80,25 +84,13 @@ export default {
 <style lang="scss">
 .detailedView {
   width: 100% !important;
-  height: 80vh;
+
   padding: 5rem 10rem;
-  align-items: center;
 }
 
-.detail__goback {
-  width: 100%;
+.todo__detailWrapper {
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
-
-  & > a {
-    background: $text-primary;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-  }
-  & > a:hover {
-    background: #232323;
-  }
+  padding: 80px;
 }
 </style>

@@ -1,31 +1,56 @@
 <template>
-  <div class="createTodo card">
-    <div class="createTodo__inputBox">
+  <div class="createTodo card" :class="{ disabled: showSpinner }">
+    <SpinnerIcon v-if="showSpinner" />
+    <div
+      class="createTodo__inputBox"
+      :class="inDetailMode && 'createTodo__inputBox-detail'"
+    >
       <label for="createTodo__inputBox_titleLabel">Title</label>
       <input
         type="text"
         class="createTodo__inputBox_titleInput"
         v-model.trim="title"
       />
-      <span v-show="isTitleError">Title is required.</span>
+      <span
+        v-show="isTitleError"
+        class="createTodo__inputBox_error requiredError"
+        >Title is required.</span
+      >
 
       <label for="createTodo__inputBox_descLabel">Description</label>
       <textarea
         class="createTodo__inputBox_descInput"
+        :class="inDetailMode && 'createTodo__inputBox_descInput-detail'"
         v-model.trim="description"
       />
-      <span v-show="isDescError">Description is required.</span>
+      <span v-show="isDescError" class="createTodo__Desc_error requiredError"
+        >Description is required.</span
+      >
+
+      <label for="createTodo__inputBox_priorityLabel">Priority</label>
+      <v-select
+        :options="priorities"
+        :reduce="(priority) => priority.code"
+        v-model="priority"
+        label="label"
+      />
     </div>
 
     <div class="createTodo__button">
       <button
         v-if="!inDetailMode"
         class="createTodo__button_add btn"
+        id="createTodo__add"
         @click="onAdd"
       >
         Add
       </button>
-      <button v-else class="createTodo__button_add btn" @click="onUpdate">
+      <button
+        id="createTodo__update"
+        v-else
+        class="createTodo__button_add btn"
+        @click="onUpdate"
+      >
         Update
       </button>
       <div
@@ -42,10 +67,17 @@
 <script>
 import DeleteIcon from "@/components/icons/DeleteIcon"
 import { mapGetters } from "vuex"
+import SpinnerIcon from "./icons/SpinnerIcon"
+import sanitizeHtml from "sanitize-html"
+
+import vSelect from "vue-select"
+import "vue-select/dist/vue-select.css"
 
 export default {
   components: {
     DeleteIcon,
+    SpinnerIcon,
+    "v-select": vSelect,
   },
   props: {
     inDetailMode: {
@@ -53,7 +85,13 @@ export default {
       default: false,
     },
     id: {
-      type: Number,
+      type: String,
+      default: null,
+    },
+
+    todoItem: {
+      type: Object,
+      default: null,
     },
   },
   data() {
@@ -62,6 +100,13 @@ export default {
       description: null,
       isTitleError: false,
       isDescError: false,
+      showSpinner: false,
+      priorities: [
+        { label: "High", code: "high" },
+        { label: "Mid", code: "mid" },
+        { label: "Low", code: "low" },
+      ],
+      priority: "mid",
     }
   },
   computed: {
@@ -73,30 +118,39 @@ export default {
   },
   mounted() {
     if (this.inDetailMode) {
-      const { todo, status } = this.todo
-
-      if (status === "ok") {
-        this.title = todo.title
-        this.description = todo.desc
-      }
+      const { title, desc } = this.todoItem
+      this.title = title
+      this.description = desc
     }
   },
   methods: {
-    onAdd() {
+    async onAdd() {
+      this.title = sanitizeHtml(this.title)
+      this.description = sanitizeHtml(this.description)
+
       if (!this.isValidate()) return
 
-      this.$store.dispatch("addTodoItem", {
-        title: this.title,
-        desc: this.description,
-      })
+      this.showSpinner = true
 
-      this.$emit("add")
-      this.onCancel()
+      try {
+        await this.$store.dispatch("addTodoItem", {
+          title: this.title,
+          desc: this.description,
+          priority: this.priority,
+        })
+      } catch (error) {
+        throw new Error(error)
+      } finally {
+        this.showSpinner = false
+
+        this.$emit("add")
+        this.onCancel()
+      }
     },
     onUpdate() {
       if (!this.isValidate()) return
 
-      this.$emit("update", this.title, this.description)
+      this.$emit("update", this.title, this.description, this.priority)
     },
     onCancel() {
       this.$emit("cancel")
@@ -120,9 +174,17 @@ export default {
 </script>
 
 <style lang="scss">
+.createTodo {
+  position: relative;
+}
+
 .createTodo__inputBox_descInput {
   resize: none;
   height: 5rem;
+
+  &-detail {
+    height: 12rem;
+  }
 }
 
 .createTodo__inputBox {
@@ -134,6 +196,12 @@ export default {
     margin-bottom: 12px;
     border: 3px solid $border-primary;
     border-radius: 5px;
+    padding-left: 0.5rem;
+  }
+
+  &-detail {
+    width: 100%;
+    padding: 2rem 4rem;
   }
 }
 
@@ -151,5 +219,33 @@ export default {
   &_cancel {
     margin-left: 18px;
   }
+}
+
+.requiredError {
+  color: #cc0000;
+}
+
+.v-select {
+  --vs-border-width: 3px;
+  --vs-border-color: #d1d8ff;
+  --vs-controls-color: #d1d8ff;
+  --vs-actions-padding: 0px 4px;
+  margin-bottom: 12px;
+}
+
+.vs__clear > svg {
+  width: 20px;
+}
+
+.vs__open-indicator {
+  width: 20px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.vs__dropdown-toggle {
+  padding: 0px;
 }
 </style>

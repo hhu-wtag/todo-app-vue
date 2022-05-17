@@ -2,7 +2,7 @@
   <div class="modal__container">
     <div class="modal__overlay"></div>
     <div class="modal__main">
-      <p>Are You Sure?</p>
+      <p class="text-base">Are You Sure?</p>
 
       <div class="modal__main_button">
         <button class="modal__main_button-primary btn" @click="onConfirm">
@@ -35,6 +35,7 @@ export default {
   position: relative;
   display: grid;
   place-items: center;
+  z-index: 15;
 }
 
 .modal__overlay {
@@ -47,12 +48,16 @@ export default {
 }
 
 .modal__main {
-  position: absolute;
+  position: fixed;
   top: 2rem;
+  text-align: center;
   border: 1px solid $border-primary;
   border-radius: 5px;
-  padding: 2rem 4rem;
+  padding: 20px 40px;
   background: $bg-secondary;
+
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .modal__main_button {
@@ -65,6 +70,7 @@ export default {
     background-color: $bg-secondary;
     border: 1px solid $border-primary;
     padding: 4px 8px;
+    font-size: 14px;
   }
 
   &-primary {
@@ -72,7 +78,12 @@ export default {
     color: white;
   }
 
-  &-secondary {
+  & > * + * {
+    margin-left: 1rem;
   }
+}
+
+.text-base {
+  font-size: 18px;
 }
 </style>

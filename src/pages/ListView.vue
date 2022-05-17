@@ -7,58 +7,72 @@
     />
     <div class="todoApp__main">
       <EmptyStateIcon v-if="showEmptyState" class="todoApp__main_emptyState" />
-
+      <SpinnerIcon v-if="showSpinner" class="spinner__listView" />
       <p class="todoApp__main_title">Add Tasks</p>
-      <div class="todoApp__button">
-        <button class="todoApp__button_createButton btn" @click="onCreate">
-          Create
-        </button>
 
-        <div class="todoApp__button_filterButton">
-          <button
-            class="todoApp__button_filterButton-all btn"
-            :class="{
-              activeFilter: activeFilter === 'all' && !disableFilterButton,
-            }"
-            @click="onAll"
-            :disabled="disableFilterButton"
-          >
-            All
-          </button>
-          <button
-            class="todoApp__button_filterButton-incomplete btn"
-            :class="{
-              activeFilter: activeFilter === 'inc' && !disableFilterButton,
-            }"
-            @click="onInComplete"
-            :disabled="disableFilterButton"
-          >
-            Incomplete
-          </button>
-          <button
-            class="todoApp__button_filterButton-complete btn"
-            :class="{
-              activeFilter: activeFilter === 'com' && !disableFilterButton,
-            }"
-            @click="onComplete"
-            :disabled="disableFilterButton"
-          >
-            Complete
-          </button>
-        </div>
+      <div class="todoApp__toastList">
+        <transition-group name="list">
+          <ToastBar v-for="toast in toasts" :toast="toast" :key="toast.id" />
+        </transition-group>
       </div>
 
-      <div class="todoApp__list">
-        <CreateTodo v-if="showCreateTodo" @cancel="onCancel" @add="renderAll" />
+      <div class="todoApp__header" :class="{ disabled: showSpinner }">
+        <div class="todoApp__button">
+          <button class="todoApp__button_createButton btn" @click="onCreate">
+            <PlusIcon class="todoApp__button_createButton-icon" />
+            <span class="todoApp__button_createButton-label">Create</span>
+          </button>
 
-        <TodoItem
-          v-for="todo of todos"
-          class="card"
-          :key="todo.id"
-          :todo="todo"
-          :inDetailedMode="false"
-          @delete="openModal"
-        />
+          <div class="todoApp__button_filterButton">
+            <button
+              class="todoApp__button_filterButton-all btn"
+              :class="{
+                activeFilter: activeFilter === 'all' && !disableFilterButton,
+              }"
+              @click="onAll"
+              :disabled="disableFilterButton"
+            >
+              All
+            </button>
+            <button
+              class="todoApp__button_filterButton-incomplete btn"
+              :class="{
+                activeFilter: activeFilter === 'inc' && !disableFilterButton,
+              }"
+              @click="onInComplete"
+              :disabled="disableFilterButton"
+            >
+              Incomplete
+            </button>
+            <button
+              class="todoApp__button_filterButton-complete btn"
+              :class="{
+                activeFilter: activeFilter === 'com' && !disableFilterButton,
+              }"
+              @click="onComplete"
+              :disabled="disableFilterButton"
+            >
+              Complete
+            </button>
+          </div>
+        </div>
+
+        <div class="todoApp__list">
+          <CreateTodo
+            v-if="showCreateTodo"
+            @cancel="onCancel"
+            @add="renderAll"
+          />
+
+          <TodoItem
+            v-for="todo of todos"
+            class="card"
+            :key="todo.id"
+            :todo="todo"
+            :inDetailedMode="false"
+            @delete="openModal"
+          />
+        </div>
       </div>
     </div>
 
@@ -80,9 +94,22 @@ import TodoItem from "../components/TodoItem"
 import CreateTodo from "../components/CreateTodo"
 import ModalDialogue from "@/components/ModalDialogue"
 import EmptyStateIcon from "../components/icons/EmptyStateIcon"
+import SpinnerIcon from "@/components/icons/SpinnerIcon"
+import ToastBar from "@/components/ToastBar"
+import { SET_FILTER, RESET_LIMIT } from "@/stores/mutation-types"
+import { ALL, INCOMPLETE, COMPLETE } from "@/utils/constants"
+import PlusIcon from "@/components/icons/PlusIcon.vue"
 
 export default {
-  components: { TodoItem, CreateTodo, ModalDialogue, EmptyStateIcon },
+  components: {
+    TodoItem,
+    CreateTodo,
+    ModalDialogue,
+    EmptyStateIcon,
+    SpinnerIcon,
+    ToastBar,
+    PlusIcon,
+  },
   data: function () {
     return {
       todoTitle: null,
@@ -91,32 +118,86 @@ export default {
       showCreateTodo: false,
       showModal: false,
       todoItemToBeDeleted: null,
-      activeFilter: "all",
+      showLoader: false,
+      allTodoLen: 0,
+      comTodoLen: 0,
+      incTodoLen: 0,
     }
   },
   computed: {
     ...mapGetters({
       allTodos: "getTodos",
-      activeLoadMore: "activeLoadMore",
+      toasts: "getToasts",
     }),
 
     showEmptyState: function () {
       return this.todos.length === 0 && !this.showCreateTodo
     },
 
+    showSpinner() {
+      return (
+        this.showLoader ||
+        (this.$store.state.isSearching && !this.showEmptyState)
+      )
+    },
+
     disableFilterButton: function () {
-      return this.allTodos.length === 0
+      return (
+        this.allTodoLen === 0 && this.incTodoLen === 0 && this.comTodoLen === 0
+      )
+    },
+
+    activeFilter: function () {
+      return this.$store.state.currentFilter
+    },
+
+    activeLoadMore: function () {
+      let { currentFilter, limit } = this.$store.state
+
+      if (currentFilter === ALL) {
+        return this.allTodoLen > limit
+      } else if (currentFilter === INCOMPLETE) {
+        return this.incTodoLen > limit
+      } else {
+        return this.comTodoLen > limit
+      }
     },
   },
   created() {
-    this.todos = [...this.allTodos]
+    this.todos = [...this.fetchAndFilter()]
   },
   watch: {
     allTodos: function () {
-      this.todos = [...this.allTodos]
+      this.todos = [...this.fetchAndFilter()]
+    },
+
+    activeFilter: function () {
+      this.todos = [...this.fetchAndFilter()]
     },
   },
   methods: {
+    fetchAndFilter() {
+      let { currentFilter, limit } = this.$store.state
+
+      let response = [...this.allTodos]
+
+      let incFilteredTodos = response.filter((todo) => !todo.done)
+      let comFilteredTodos = response.filter((todo) => todo.done)
+
+      this.allTodoLen = response.length
+      this.incTodoLen = incFilteredTodos.length
+      this.comTodoLen = comFilteredTodos.length
+
+      if (currentFilter === ALL) {
+        return response.slice(0, limit)
+      } else if (currentFilter === COMPLETE) {
+        response = comFilteredTodos
+      } else {
+        response = incFilteredTodos
+      }
+
+      return response.slice(0, limit)
+    },
     onDelete() {
       this.showModal = false
 
@@ -139,23 +220,34 @@ export default {
       this.todoItemToBeDeleted = null
     },
     onAll() {
-      this.activeFilter = "all"
-      this.todos = [...this.$store.getters.getFilterTodos("all")]
+      this.$store.commit(RESET_LIMIT)
+      this.$store.commit(SET_FILTER, {
+        filter: ALL,
+      })
+
+      this.todos = [...this.fetchAndFilter()]
     },
     onComplete() {
-      this.activeFilter = "com"
-      this.todos = [...this.$store.getters.getFilterTodos("com")]
+      this.$store.commit(SET_FILTER, {
+        filter: COMPLETE,
+      })
+
+      this.todos = [...this.fetchAndFilter()]
     },
     onInComplete() {
-      this.activeFilter = "inc"
-      this.todos = [...this.$store.getters.getFilterTodos("inc")]
+      this.$store.commit(SET_FILTER, {
+        filter: INCOMPLETE,
+      })
+
+      this.todos = [...this.fetchAndFilter()]
     },
     renderAll() {
-      this.activeFilter = "all"
       this.todos = this.allTodos
+      this.onAll()
     },
     onLoadMore() {
       this.$store.dispatch("setTodoLimit")
+      this.todos = [...this.fetchAndFilter()]
     },
   },
 }
@@ -166,10 +258,11 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  background-color: $bg-primary;
 }
 
 .todoApp__main {
-  padding: 65px 150px;
+  padding: 80px;
 
   &_emptyState {
     position: fixed;
@@ -184,6 +277,23 @@ export default {
     margin-bottom: 28px;
   }
 }
+
+.todoApp__toastList {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.spinner__listView {
+  position: fixed;
+  top: 40%;
+}
+
 .todoApp__button {
   display: flex;
   width: 100%;
@@ -191,11 +301,37 @@ export default {
   margin-bottom: 34px;
 
   &_createButton {
+    position: relative;
     background: $text-accent;
     color: $bg-secondary;
     padding: 8px 12px;
     border: 1px solid #d1d8ff;
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 5.5rem;
+
+    &-icon,
+    &-label {
+      transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+    }
+
+    &-icon {
+      position: absolute;
+      left: 0;
+      opacity: 0;
+    }
+
+    &:hover &-label {
+      transform: translateX(7px);
+    }
+
+    &:hover &-icon {
+      opacity: 1;
+      left: 0;
+      transform: translateX(7px);
+    }
   }
 
   &_filterButton > button {
@@ -212,13 +348,17 @@ export default {
 
 .activeFilter {
   color: $text-accent;
-  border-bottom: 3px solid $border-primary !important;
+
+  box-shadow: 0px 3px 0px 0px $border-primary;
+  -webkit-box-shadow: 0px 3px 0px 0px $border-primary;
+  -moz-box-shadow: 0px 3px 0px 0px $border-primary;
 }
 
 .todoApp__list {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+  z-index: 10;
 }
 
 .todoApp__list > :not(:nth-child(4n)) {
@@ -232,7 +372,9 @@ export default {
 .todoApp__footer {
   display: flex;
   justify-content: center;
+  background-color: $bg-primary;
   width: 100%;
+  padding-bottom: 20px;
 
   &_loadMore {
     padding: 8px 18px;
@@ -240,6 +382,22 @@ export default {
     background-color: $text-primary;
     color: white;
     font-weight: bold;
+  }
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+@media only screen and (max-width: 480px) {
+  .todoApp__main_title {
+    font-size: 28px;
   }
 }
 </style>

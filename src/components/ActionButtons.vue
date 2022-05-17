@@ -1,17 +1,17 @@
 <template>
   <div class="actionButtons">
-    <TodoButton v-if="showDoneButton" @click="onDone">
+    <TodoButton id="doneButton" v-if="showDoneButton" @click="onDone">
       <DoneIcon />
     </TodoButton>
-    <TodoButton @click="onDelete">
+    <TodoButton id="deleteButton" @click="onDelete">
       <DeleteIcon />
     </TodoButton>
 
-    <TodoButton v-if="showEditButton" @click="onEdit">
+    <TodoButton id="editButton" v-if="showEditButton" @click="onEdit">
       <EditIcon />
     </TodoButton>
 
-    <TodoButton v-if="showEditStateButton" @click="onCancel"
+    <TodoButton id="cancelButton" v-if="showEditStateButton" @click="onCancel"
       ><CancelIcon
     /></TodoButton>
   </div>
@@ -48,28 +48,27 @@ export default {
   },
   computed: {
     showEditButton() {
-      return !this.isEditing && !this.todo.done && this.inDetailMode
+      return !this.isEditing && !this.todo?.done && this.inDetailMode
     },
     showDoneButton() {
-      return !this.todo.done && !this.isEditing
+      return !this.todo?.done && !this.isEditing
     },
     showEditStateButton() {
-      return this.isEditing && !this.todo.done
+      return this.isEditing && !this.todo?.done
     },
   },
   methods: {
     onDone() {
-      this.$emit("done", this.todo.id)
+      this.$emit("done", this.todo?.id)
     },
     onDelete() {
-      this.$emit("delete", this.todo.id)
+      this.$emit("delete", this.todo?.id)
     },
     onEdit() {
-      this.$emit("edit", this.todo.id)
+      this.$emit("edit", this.todo?.id)
     },
-
     onCancel() {
-      this.$emit("cancel", this.todo.id)
+      this.$emit("cancel", this.todo?.id)
     },
   },
 }

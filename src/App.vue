@@ -12,6 +12,9 @@ export default {
   components: {
     NavBar,
   },
+  created() {
+    this.$store.dispatch("getAllTodo")
+  },
 }
 </script>
 
@@ -19,6 +22,6 @@ export default {
 .todo__container {
   color: $text-primary;
   background: $bg-primary;
-  height: 100%;
+  height: 100vh;
 }
 </style>
